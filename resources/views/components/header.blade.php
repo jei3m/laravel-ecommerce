@@ -1,17 +1,20 @@
 <header class="relative">
     <div class="container mx-auto mt-[0.5rem] py-4 px-4 lg:px-0">
         <nav class="flex items-center justify-between">
-            <div class="flex items-center gap-4 lg:gap-8">
-                <a href="{{ route('products.index') }}" class="text-xl md:text-2xl lg:text-3xl font-bold text-spink flex items-center gap-2">
-                    <i class="fas fa-shopping-bag text-3xl lg:text-5xl mt-[-0.5rem]"></i>
-                    <span>E-COMMERCE</span>
-                </a>
-                <div class="relative hidden md:flex items-center px-2 py-1 bg-neutral-800 rounded-full">
+            {{-- Icon and Text --}}
+            <a href="{{ route('products.index') }}" class="text-xl md:text-2xl lg:text-3xl font-bold text-spink flex items-center gap-2">
+                <i class="fas fa-shopping-bag text-3xl lg:text-5xl mt-[-0.5rem]"></i>
+                <span>E-COMMERCE</span>
+            </a>
+
+            {{-- Search Bar --}}
+            <div class="relative hidden md:block max-w-xs">
+                <div class="relative flex items-center px-2 py-1 bg-neutral-800 rounded-full">
                     <i class="fas fa-search absolute left-5 text-gray-400"></i>
-                    <input type="text" placeholder="Search products..." class="w-[200px] lg:w-auto py-2 pl-9 pr-4 bg-transparent text-white rounded-full focus:outline-none">
+                    <input type="text" placeholder="Search products..." class="w-full py-2 pl-9 pr-4 bg-transparent text-white rounded-full focus:outline-none">
                 </div>
-            </div>  
-            
+            </div>
+
             <div class="hidden md:flex items-center space-x-4 lg:space-x-8">
                 <a href="{{ route('products.index') }}" class="block py-2 text-sm lg:text-base text-spink font-semibold transition-colors">Home</a>
                 <a href="{{ route('products.browse') }}" class="block py-2 text-sm lg:text-base text-spink font-semibold transition-colors">Browse</a>
