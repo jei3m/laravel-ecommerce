@@ -58,13 +58,71 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index', ['products' => $this->products]); 
+        // Get most popular products by sales
+        $products = collect($this->products)
+            ->sortByDesc('sold')
+            ->take(8)
+            ->values();
+
+        return view('products.index', ['products' => $products]);
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function browse()
+    public function browse(Request $request)
+    {
+        $category = $request->query('category');
+        $sort = $request->query('sort', 'newest');
+
+        $products = collect($this->products);
+
+        // Filter by category if specified
+        if ($category) {
+            $products = $products->filter(function ($product) use ($category) {
+                return $product['category'] === $category;
+            });
+        }
+
+        // Apply sorting
+        switch ($sort) {
+            case 'price_low':
+                $products = $products->sortBy('price');
+                break;
+            case 'price_high':
+                $products = $products->sortByDesc('price');
+                break;
+            case 'popular':
+                $products = $products->sortByDesc('sold');
+                break;
+            default: // newest
+                $products = $products->sortByDesc('id');
+                break;
+        }
+
+        // Get unique categories for the filter dropdown
+        $categories = collect($this->products)->pluck('category')->unique()->values();
+
+        // Paginate the results
+        $perPage = 12;
+        $page = $request->query('page', 1);
+        $items = $products->forPage($page, $perPage);
+        
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $products->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('products.browse', [
+            'products' => $paginator,
+            'categories' => $categories
+        ]);
+    }
+
+    public function browseSimple()
     {
         return view('products.browse', ['products' => $this->products]);
     }
@@ -89,13 +147,15 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $product = collect($this->products)->get($id);
+        $product = collect($this->products)->firstWhere('id', (int) $id);
+        
         if (!$product) {
             abort(404);
         }
-        return view('products.show', compact('product'));
+
+        return view('products.show', ['product' => $product]);
     }
 
     /**
