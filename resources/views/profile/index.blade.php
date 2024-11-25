@@ -30,6 +30,52 @@
                 </div>
 
                 <div class="border-b border-neutral-800 pb-4">
+                    <h2 class="text-xl font-semibold text-white mb-4">Home Address</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="street" class="block text-sm font-medium text-gray-400">House/Unit & Street</label>
+                            <input 
+                                type="text" 
+                                id="street" 
+                                name="street" 
+                                value="Unit 1234, Palm Street"
+                                class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                            >
+                        </div>
+                        <div>
+                            <label for="barangay" class="block text-sm font-medium text-gray-400">Barangay</label>
+                            <input 
+                                type="text" 
+                                id="barangay" 
+                                name="barangay" 
+                                value="Brgy. San Antonio"
+                                class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                            >
+                        </div>
+                        <div>
+                            <label for="city" class="block text-sm font-medium text-gray-400">City/Municipality</label>
+                            <input 
+                                type="text" 
+                                id="city" 
+                                name="city" 
+                                value="Makati City"
+                                class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                            >
+                        </div>
+                        <div>
+                            <label for="province" class="block text-sm font-medium text-gray-400">Province & ZIP</label>
+                            <input 
+                                type="text" 
+                                id="province" 
+                                name="province" 
+                                value="Metro Manila, 1200"
+                                class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-neutral-800 pb-4">
                     <h2 class="text-xl font-semibold text-white mb-4">Shopping Information</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -56,39 +102,7 @@
                 <div class="border-b border-neutral-800 pb-4">
                     <h2 class="text-xl font-semibold text-white mb-4">Recent Checkouts</h2>
                     <div class="bg-neutral-800 rounded-[15px] p-4">
-                        <div class="max-h-[300px] overflow-y-auto pr-2 space-y-4 custom-scrollbar">
-                            <x-checkout-card 
-                                orderNumber="1234"
-                                itemCount="2"
-                                total="299.98"
-                                time="Just now"
-                                items="Gaming Laptop, Smartphone"
-                            />
-
-                            <x-checkout-card 
-                                orderNumber="1233"
-                                itemCount="1"
-                                total="149.99"
-                                time="2 hours ago"
-                                items="Wireless Headphones"
-                            />
-
-                            <x-checkout-card 
-                                orderNumber="1232"
-                                itemCount="3"
-                                total="599.97"
-                                time="1 day ago"
-                                items="Smart Watch, Keyboard, Mouse"
-                            />
-
-                            <x-checkout-card 
-                                orderNumber="1231"
-                                itemCount="1"
-                                total="899.99"
-                                time="3 days ago"
-                                items="4K Monitor"
-                            />
-                        </div>
+                        <x-checkout-json />
                     </div>
                 </div>
 
