@@ -4,7 +4,7 @@
 <div class="container mx-auto p-2 lg:p-14 bg-neutral-800 rounded-[30px]">
     <x-hero />
     
-    <div class="bg-neutral-900 rounded-[20px] p-7 pb-14">
+    <div class="bg-neutral-900 rounded-[20px] p-7">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-white"><span class="underline decoration-white decoration-2">Most Popular</span> <span class="text-spink">Right Now</span></h1>
         </div>
@@ -29,11 +29,11 @@
         </div>
     </div>
 
-    <div class="flex justify-center mt-[-1.4rem]">
-        <a href="{{ route('products.browse') }}" class="inline-block py-3 px-6 bg-spink font-semibold text-white rounded-full">
-            Discover All Products
-        </a>
-    </div>
+        <div class="flex justify-center mt-[-1rem]">
+            <a href="{{ route('products.browse') }}" class="inline-block py-3 px-6 bg-spink transition-colors font-semibold text-white rounded-full">
+                Discover All Products
+            </a>
+        </div>
 
 </div>
 @endsection
