@@ -8,3 +8,9 @@ Route::get('/', function () {
 })->name('home');
 
 Route::resource('products', ProductController::class);
+
+Route::get('/browse', [ProductController::class, 'browse'])->name('products.browse');
+
+Route::get('/profile', function () {
+    return view('profile.index');
+})->name('profile');
