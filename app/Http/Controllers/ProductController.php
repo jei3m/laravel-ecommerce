@@ -15,7 +15,8 @@ class ProductController extends Controller
             'image' => '/images/placeholder.png',
             'category' => 'Electronics',
             'rating' => 4.7,
-            'sold' => 245
+            'sold' => 245,
+            'stock' => 15
         ],
         2 => [
             'id' => 2,
@@ -25,7 +26,8 @@ class ProductController extends Controller
             'image' => '/images/placeholder.png',
             'category' => 'Mobile',
             'rating' => 4.5,
-            'sold' => 189
+            'sold' => 189,
+            'stock' => 42
         ],
         3 => [
             'id' => 3,
@@ -35,7 +37,8 @@ class ProductController extends Controller
             'image' => '/images/placeholder.png',
             'category' => 'Audio',
             'rating' => 4.8,
-            'sold' => 432
+            'sold' => 432,
+            'stock' => 78
         ],
         4 => [
             'id' => 4,
@@ -45,7 +48,8 @@ class ProductController extends Controller
             'image' => '/images/placeholder.png',
             'category' => 'Audio',
             'rating' => 4.8,
-            'sold' => 167
+            'sold' => 167,
+            'stock' => 25
         ]
     ];
 
@@ -54,8 +58,15 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = collect($this->products)->values();
-        return view('products.index', compact('products'));
+        return view('products.index', ['products' => $this->products]); 
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function browse()
+    {
+        return view('products.browse', ['products' => $this->products]);
     }
 
     /**
