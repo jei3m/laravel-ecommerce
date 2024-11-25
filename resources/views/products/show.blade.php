@@ -24,7 +24,7 @@
                         <span class="inline-block bg-spink text-white px-4 py-2 rounded-full text-md font-semibold">
                             {{ $product['category'] }}
                         </span>
-                        <span class="inline-block bg-neutral-700 text-white px-4 py-2 rounded-full text-md font-semibold justify-end">
+                        <span class="inline-block bg-neutral text-white px-4 py-2 rounded-full text-md font-semibold justify-end">
                             <i class="fas fa-user text-xs lg:text-sm"></i> Seller: John Doe
                         </span>
                     </div>
