@@ -24,6 +24,24 @@
             }
         }
     </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #525252;
+            border-radius: 20px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: #666666;
+        }
+    </style>
 </head>
 <body class="bg-neutral-900 min-h-screen flex flex-col max-w-[1300px] mx-auto ">
     <!-- Header -->
