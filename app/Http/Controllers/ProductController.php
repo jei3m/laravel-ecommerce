@@ -2,189 +2,152 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    private $products = [
-        1 => [
-            'id' => 1,
-            'name' => 'Gaming Laptop',
-            'price' => 1299.99,
-            'description' => 'High-performance gaming laptop with RTX 3080',
-            'image' => '/images/placeholder.png',
-            'category' => 'Electronics',
-            'rating' => 4.7,
-            'sold' => 245,
-            'stock' => 15
-        ],
-        2 => [
-            'id' => 2,
-            'name' => 'Smartphone',
-            'price' => 799.99,
-            'description' => 'Latest smartphone with 5G capability',
-            'image' => '/images/placeholder.png',
-            'category' => 'Mobile',
-            'rating' => 4.5,
-            'sold' => 189,
-            'stock' => 42
-        ],
-        3 => [
-            'id' => 3,
-            'name' => 'Wireless Headphones',
-            'price' => 199.99,
-            'description' => 'Noise-cancelling wireless headphones',
-            'image' => '/images/placeholder.png',
-            'category' => 'Audio',
-            'rating' => 4.8,
-            'sold' => 432,
-            'stock' => 78
-        ],
-        4 => [
-            'id' => 4,
-            'name' => 'Wireless Headphones',
-            'price' => 199.99,
-            'description' => 'Noise-cancelling wireless headphones',
-            'image' => '/images/placeholder.png',
-            'category' => 'Audio',
-            'rating' => 4.8,
-            'sold' => 167,
-            'stock' => 25
-        ]
-    ];
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        // Get most popular products by sales
-        $products = collect($this->products)
-            ->sortByDesc('sold')
+        $products = Product::orderBy('sold', 'desc')
             ->take(8)
-            ->values();
+            ->get();
 
-        return view('products.index', ['products' => $products]);
+        return view('products.index', compact('products'));
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function browse(Request $request)
     {
-        $category = $request->query('category');
-        $sort = $request->query('sort', 'newest');
+        $query = Product::query();
 
-        $products = collect($this->products);
-
-        // Filter by category if specified
-        if ($category) {
-            $products = $products->filter(function ($product) use ($category) {
-                return $product['category'] === $category;
-            });
+        // Category filtering
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
         }
 
-        // Apply sorting
+        // Sorting
+        $sort = $request->get('sort', 'price_low'); // Default to 'price_low'
         switch ($sort) {
             case 'price_low':
-                $products = $products->sortBy('price');
+                $query->orderBy('price', 'asc');
                 break;
             case 'price_high':
-                $products = $products->sortByDesc('price');
+                $query->orderBy('price', 'desc');
                 break;
-            case 'popular':
-                $products = $products->sortByDesc('sold');
-                break;
-            default: // newest
-                $products = $products->sortByDesc('id');
+            default:
+                $query->orderBy('price', 'asc'); // Default to 'price_low'
                 break;
         }
 
-        // Get unique categories for the filter dropdown
-        $categories = collect($this->products)->pluck('category')->unique()->values();
-
-        // Paginate the results
-        $perPage = 12;
-        $page = $request->query('page', 1);
-        $items = $products->forPage($page, $perPage);
+        // Get products with pagination
+        $products = $query->paginate(12)->withQueryString();
         
-        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
-            $items,
-            $products->count(),
-            $perPage,
-            $page,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
-
+        // Get unique categories for the filter dropdown
+        $categories = Product::select('category')
+            ->distinct()
+            ->whereNotNull('category')
+            ->pluck('category')
+            ->sort()
+            ->values();
+        
         return view('products.browse', [
-            'products' => $paginator,
-            'categories' => $categories
+            'products' => $products,
+            'categories' => $categories,
+            'selectedCategory' => $request->category,
+            'selectedSort' => $sort
         ]);
     }
 
-    public function browseSimple()
+    public function dashboard()
     {
-        return view('products.browse', ['products' => $this->products]);
+        $products = Product::latest()
+            ->paginate(10);
+        
+        return view('products.dashboard', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('products.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        return redirect()->route('products.index')
-            ->with('success', 'Product created successfully.');
-    }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'description' => 'required|string',
+            'category' => 'required|string|max:50',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $product = collect($this->products)->firstWhere('id', (int) $id);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        } else {
+            $validated['image'] = 'products/placeholder.png';
+        }
+
+        $validated['user_id'] = auth()->id();
+        $validated['rating'] = 0;
+        $validated['sold'] = 0;
         
-        if (!$product) {
-            abort(404);
-        }
+        $product = Product::create($validated);
 
-        return view('products.show', ['product' => $product]);
+        return redirect()
+            ->route('products.show', $product)
+            ->with('success', 'Product created successfully!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function show(Product $product)
     {
-        $product = collect($this->products)->get($id);
-        if (!$product) {
-            abort(404);
-        }
+        return view('products.show', compact('product'));
+    }
+
+    public function edit(Product $product)
+    {
         return view('products.edit', compact('product'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
-        return redirect()->route('products.index')
-            ->with('success', 'Product updated successfully.');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'description' => 'required|string',
+            'category' => 'required|string|max:50',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|max:2048'
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($product->image && $product->image !== 'products/placeholder.png') {
+                Storage::disk('public')->delete($product->image);
+            }
+            
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        $product->update($validated);
+
+        return redirect()
+            ->route('products.show', $product)
+            ->with('success', 'Product updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        return redirect()->route('products.index')
-            ->with('success', 'Product deleted successfully.');
+        if ($product->image && $product->image !== 'products/placeholder.png') {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $product->delete();
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product deleted successfully!');
     }
 }

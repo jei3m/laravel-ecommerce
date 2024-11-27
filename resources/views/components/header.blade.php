@@ -9,7 +9,7 @@
 
             {{-- Search Bar --}}
             <div class="relative hidden md:block max-w-xs">
-                <div class="relative flex items-center px-2 py-1 bg-neutral-800 rounded-full">
+                <div class="relative flex items-center px-2 py-1 rounded-full">
                     <i class="fas fa-search absolute left-5 text-gray-400"></i>
                     <input type="text" placeholder="Search products..." class="w-full py-2 pl-9 pr-4 bg-transparent text-white rounded-full focus:outline-none">
                 </div>
