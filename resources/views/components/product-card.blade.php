@@ -4,7 +4,11 @@
     <div class="bg-neutral-800 rounded-[24px] shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
         <div class="p-5">
             <div class="relative pb-[80%] rounded-[24px] overflow-hidden">
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="absolute top-0 left-0 w-full h-full object-cover">
+                @if(str_starts_with($product->image, 'http'))
+                    <img src="{{ $product->getImageUrl() }}" alt="{{ $product->name }}" class="absolute top-0 left-0 w-full h-full object-cover">
+                @else
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="absolute top-0 left-0 w-full h-full object-cover">
+                @endif
             </div>
             <div class="mt-4">
                 <div class="flex justify-between items-center mb-1">

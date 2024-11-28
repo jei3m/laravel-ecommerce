@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::orderBy('sold', 'desc')
-            ->take(8)
+            ->take(4)
             ->get();
 
         return view('products.index', compact('products'));

@@ -14,9 +14,18 @@
                             <p class="text-gray-400">Manage your account settings and preferences</p>
                         </div>
                     </div>
-                    <a href="{{ route('products.dashboard') }}" class="bg-spink text-white font-bold py-2 px-4 rounded-xl transition-colors">
-                        <i class="fas fa-chart-bar mr-2"></i>Dashboard
-                    </a>
+
+                    <div class="space-y-2 flex flex-col">
+                        @if(auth()->user()->isAdmin())
+                        <a href="{{ route('products.dashboard') }}" class="bg-spink text-white font-bold py-2 px-4 rounded-xl">
+                            <i class="fas fa-box mr-2"></i>Products
+                        </a>
+                        <a href="{{ route('orders.dashboard') }}" class="bg-spink text-white font-bold py-2 px-4 rounded-xl">
+                            <i class="fas fa-shopping-bag mr-2"></i>Orders
+                        </a>
+                        @endif
+                    </div>
+
                 </div>
 
                 <div class="space-y-6">
@@ -38,7 +47,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-xl font-semibold text-white">Address Information</h2>
                         </div>
-                        <form id="address-form" action="{{ route('profile.update-address') }}" method="POST" onsubmit="return saveAddress()">
+                        <form id="address-form" action="{{ route('profile.update-address') }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -109,12 +118,13 @@
                                     <div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center">
                                         <i class="fas fa-box text-spink"></i>
                                     </div>
-                                    <p class="text-white text-lg">12 orders completed</p>
+                                    <p class="text-white text-lg">{{$orderItemCount}} orders completed</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    {{-- Recent Orders --}}
                     <div class="border-b border-neutral-800 pb-4">
                         <h2 class="text-xl font-semibold text-white mb-4">Recent Orders</h2>
                         @if($recentOrders->isEmpty())
@@ -125,16 +135,11 @@
                                     <div class="bg-neutral-800 rounded-xl p-4">
                                         <div class="flex justify-between items-start mb-2">
                                             <div>
-                                                <span class="text-sm text-gray-400">Order #{{ $order->id }}</span>
-                                                <p class="text-white font-semibold">${{ number_format($order->total_amount, 2) }}</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="text-sm text-gray-400">{{ $order->created_at->format('M d, Y') }}</span>
+                                                <span class="text-md text-white">Order #{{ $order->id }}</span>
                                                 <p class="text-sm">
                                                     @if($order->order_status === 'pending')
                                                         <span class="text-yellow-500">Pending</span>
-                                                    @elseif($order->order_status === 'processing')
-                                                        <span class="text-blue-500">Processing</span>
+                                             
                                                     @elseif($order->order_status === 'completed')
                                                         <span class="text-green-500">Completed</span>
                                                     @elseif($order->order_status === 'cancelled')
@@ -142,21 +147,59 @@
                                                     @endif
                                                 </p>
                                             </div>
+                                            <div class="text-right">
+                                                <span class="text-sm text-gray-400">{{ $order->created_at->format('M d, Y') }}</span>
+                                                <div class="flex flex-col items-end">
+
+                                                    <p class="text-sm text-gray-400">
+                                                        {{ strtoupper($order->payment_method) }}
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="mt-2">
                                             <div class="text-sm text-gray-400 mb-2">Items:</div>
                                             <div class="space-y-3">
                                                 @foreach($order->items as $item)
                                                     <div class="flex items-center space-x-3">
-                                                        <img src="{{ asset('storage/' . $item->product->image) }}" 
-                                                            alt="{{ $item->product->name }}" 
-                                                            class="w-12 h-12 object-cover rounded-lg">
+                                                        @if(str_starts_with($item->product->image, 'http'))
+                                                            <img src="{{ $item->product->getImageUrl() }}" 
+                                                                alt="{{ $item->product->name }}" 
+                                                                class="w-12 h-12 object-cover rounded-lg">
+                                                        @else
+                                                            <img src="{{ asset('storage/' . $item->product->image) }}" 
+                                                                alt="{{ $item->product->name }}" 
+                                                                class="w-12 h-12 object-cover rounded-lg">
+                                                        @endif
                                                         <div class="flex-1">
-                                                            <div class="flex justify-between">
-                                                                <span class="text-white">{{ $item->product->name }}</span>
-                                                                <span class="text-gray-400">${{ number_format($item->price * $item->quantity, 2) }}</span>
+                                                            <div class="flex justify-between items-center">
+                                                                <div>
+                                                                    <h3 class="text-white font-medium">{{ $item->product->name }}</h3>
+                                                                    <span class="text-sm text-gray-400">Qty: {{ $item->quantity }}</span>
+                                                                </div>
+                                                                <div class="text-right">
+                                                                    <p class="text-md font-bold text-white mb-3">${{ number_format($order->total_amount, 2) }}</p>
+                                                                    @if($order->payment_method === 'online' && $order->payment_status === 'pending')
+                                                                        <div class="flex gap-2 justify-end">
+                                                                            <button type="button" 
+                                                                                onclick="confirmOrderCancel('{{ route('orders.cancel', $order) }}')"
+                                                                                class="inline-block bg-red-700 text-white text-sm font-bold py-1.5 px-4 rounded-xl transition-colors">
+                                                                                <i class="fas fa-times mr-1"></i>Cancel
+                                                                            </button>
+                                                                            <a href="{{ route('payment.process', $order) }}" 
+                                                                                class="inline-block bg-[#0070BA] hover:bg-[#003087] text-white text-sm font-bold py-1.5 px-4 rounded-xl transition-colors">
+                                                                                <i class="fab fa-paypal mr-1"></i>Pay Now
+                                                                            </a>
+                                                                        </div>
+                                                                    @elseif($order->payment_method === 'cod' && $order->payment_status === 'pending')
+                                                                        <button type="button" 
+                                                                            onclick="confirmOrderCancel('{{ route('orders.cancel', $order) }}')"
+                                                                            class="inline-block bg-red-700 text-white text-sm font-bold py-1.5 px-4 rounded-xl transition-colors">
+                                                                            <i class="fas fa-times mr-1"></i>Cancel
+                                                                        </button>
+                                                                    @endif
+                                                                </div>
                                                             </div>
-                                                            <span class="text-sm text-gray-400">Qty: {{ $item->quantity }}</span>
                                                         </div>
                                                     </div>
                                                 @endforeach
@@ -192,149 +235,212 @@
             </div>
         </div>
     </div>
-</x-app-layout>
-
-@push('scripts')
-<script>
-
-    // Custom styling for SweetAlert2
-    const swalCustom = Swal.mixin({
-        customClass: {
-            confirmButton: 'bg-spink text-white font-bold py-2 px-4 rounded-xl transition-colors hover:bg-pink-600 mr-2',
-            cancelButton: 'bg-neutral-600 text-white font-bold py-2 px-4 rounded-xl transition-colors hover:bg-neutral-700',
-            popup: 'rounded-[20px] border border-neutral-800'
-        },
-        buttonsStyling: false,
-        background: '#171717',
-        color: '#fff'
-    });
-
-    function confirmDelete() {
-        Swal.fire({
-            title: 'Delete Account',
-            text:'Please enter your password to confirm deletion',
-            input:'password',
-            inputAttributes: {
-                autocapitalize:'off',
-                required:'true',
-            },
-            showCancelButton:'true',
-            confirmButtonText:'Delete Account',
-            confirmButtonColor: '#Ff91a4',
-            cancelButtonColor: '#374151',
-            background:'#171717',
-            color:'#ffffff',
-            customClass: {
-                input: 'bg-neutral-800 border-neutral-700 text-white rounded-xl',
-                popup: 'rounded-[20px] border border-neutral-800',
-                confirmButton: 'rounded-xl',
-                cancelButton: 'rounded-xl'
-            },
-            preConfirm: (password) => {
-                const form = document.getElementById('deleteAccountForm');
-                const passwordInput = document.createElement('input');
-                passwordInput.type = 'hidden';
-                passwordInput.name = 'password';
-                passwordInput.value = password;
-                form.appendChild(passwordInput);
-                form.submit();
-            }
-        })
-    }
-
-    function confirmLogout() {
-        Swal.fire({
-            title: 'Logout',
-            text: 'Are you sure you want to logout?',
-            showCancelButton: true,
-            confirmButtonText: 'Logout',
-            confirmButtonColor: '#Ff91a4',
-            cancelButtonColor: '#374151',
-            background: '#171717',
-            color: '#ffffff',
-            customClass: {
-                popup: 'rounded-[20px] border border-neutral-800',
-                confirmButton: 'rounded-xl',
-                cancelButton: 'rounded-xl'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('logoutForm').submit();
-            }
-        });
-    }
-
-    function saveAddress() {
-        const form = document.getElementById('address-form');
-        const formData = new FormData(form);
-
-        // Show loading state
-        swalCustom.fire({
-            title: 'Saving...',
-            text: 'Updating your address information',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            willOpen: () => {
-                Swal.showLoading();
-            },
-            didOpen: () => {
-                // Custom styling for loader
-                const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
-                if (loader) {
-                    loader.style.borderLeftColor = '#ec4899';
-                }
-            }
-        });
-        
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                swalCustom.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Your address has been updated successfully',
-                    iconColor: '#22c55e',
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    buttonsStyling: true,
+    @push('scripts')
+        <script>
+            function confirmDelete() {
+                Swal.fire({
+                    title: 'Delete Account',
+                    text:'Please enter your password to confirm deletion',
+                    input:'password',
+                    inputAttributes: {
+                        autocapitalize:'off',
+                        required:'true',
+                    },
+                    showCancelButton:'true',
+                    confirmButtonText:'Delete Account',
                     confirmButtonColor: '#Ff91a4',
+                    cancelButtonColor: '#374151',
+                    background:'#171717',
+                    color:'#ffffff',
+                    customClass: {
+                        input: 'bg-neutral-800 border-neutral-700 text-white rounded-xl',
+                        popup: 'rounded-[20px] border border-neutral-800',
+                        confirmButton: 'rounded-xl',
+                        cancelButton: 'rounded-xl'
+                    },
+                    preConfirm: (password) => {
+                        const form = document.getElementById('deleteAccountForm');
+                        const passwordInput = document.createElement('input');
+                        passwordInput.type = 'hidden';
+                        passwordInput.name = 'password';
+                        passwordInput.value = password;
+                        form.appendChild(passwordInput);
+                        form.submit();
+                    }
+                })
+            }
+
+            function confirmLogout() {
+                Swal.fire({
+                    title: 'Logout',
+                    text: 'Are you sure you want to logout?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Logout',
+                    confirmButtonColor: '#Ff91a4',
+                    cancelButtonColor: '#374151',
+                    background: '#171717',
+                    color: '#ffffff',
                     customClass: {
                         popup: 'rounded-[20px] border border-neutral-800',
-                        confirmButton: 'rounded-xl font-bold',
-                        icon: 'border-green-500 text-green-500'
+                        confirmButton: 'rounded-xl',
+                        cancelButton: 'rounded-xl'
                     }
-                }).then(() => {
-                    location.reload();
-                });
-            } else {
-                swalCustom.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Failed to update address. Please try again.',
-                    iconColor: '#ec4899',
-                    confirmButtonText: 'Try Again'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('logoutForm').submit();
+                    }
                 });
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            swalCustom.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while updating your address',
-                iconColor: '#ec4899',
-                confirmButtonText: 'OK'
-            });
-        });
 
-        return false; // Prevent form submission
-    }
-</script>    
+            function saveAddress() {
+                const form = document.getElementById('address-form');
+                const formData = new FormData(form);
+
+                // Show loading state
+                Swal.fire({
+                    title: 'Saving...',
+                    text: 'Updating your address information',
+                    background: '#171717',
+                    color:'#fff',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    },
+                    didOpen: () => {
+                        const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
+                        if (loader) {
+                            loader.style.borderLeftColor = '#ec4899';
+                        }
+                    }
+                });
+
+                // Convert FormData to JSON
+                const jsonData = {};
+                formData.forEach((value, key) => {
+                    jsonData[key] = value;
+                });
+                
+                fetch(form.action, {
+                    method: 'PUT',
+                    body: JSON.stringify(jsonData),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.text().then(text => {
+                        try {
+                            return text ? JSON.parse(text) : {}
+                        } catch (e) {
+                            console.error('Error parsing response:', text);
+                            throw new Error('Invalid JSON response');
+                        }
+                    }).then(data => {
+                        if (!response.ok) {
+                            return Promise.reject(data);
+                        }
+                        return data;
+                    });
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message || 'Your address has been updated successfully',
+                        iconColor: '#22c55e',
+                        background: '#171717',
+                        color:'#fff',
+                        showConfirmButton: true,
+                        confirmButtonText: 'OK',
+                        buttonsStyling: true,
+                        confirmButtonColor: '#Ff91a4',
+                        customClass: {
+                            popup: 'rounded-[20px] border border-neutral-800',
+                            confirmButton: 'rounded-xl font-bold',
+                            icon: 'border-green-500 text-green-500'
+                        }
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error details:', error);
+                    let errorMessage = 'Failed to update address.';
+                    if (error.errors) {
+                        errorMessage = Object.values(error.errors).flat().join('\n');
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                        iconColor: '#ec4899',
+                        background: '#171717',
+                        color: '#fff',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#Ff91a4',
+                        customClass: {
+                            popup: 'rounded-[20px] border border-neutral-800',
+                            confirmButton: 'rounded-xl font-bold'
+                        }
+                    });
+                });
+
+                return false;
+            }
+
+            function confirmOrderCancel(cancelUrl) {
+                Swal.fire({
+                    title: 'Cancel Order',
+                    text: 'Are you sure you want to cancel this order? This action cannot be undone.',
+                    icon: 'warning',
+                    iconColor: '#dc2626',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, cancel order',
+                    cancelButtonText: 'No, keep order',
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#374151',
+                    background: '#171717',
+                    color: '#ffffff',
+                    customClass: {
+                        popup: 'rounded-[20px] border border-neutral-800',
+                        confirmButton: 'rounded-xl',
+                        cancelButton: 'rounded-xl'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: 'Cancelling Order...',
+                            text: 'Please wait while we process your request',
+                            background: '#171717',
+                            color: '#fff',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            },
+                            didOpen: () => {
+                                const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
+                                if (loader) {
+                                    loader.style.borderLeftColor = '#dc2626';
+                                }
+                            }
+                        });
+
+                        // Redirect to cancel URL
+                        window.location.href = cancelUrl;
+                    }
+                });
+            }
+        </script>
+    @endpush
+</x-app-layout>

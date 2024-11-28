@@ -41,7 +41,11 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 rounded-lg overflow-hidden">
-                                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                                @if(str_starts_with($product->image, 'http'))
+                                                    <img src="{{ $product->getImageUrl() }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                                @else
+                                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                                @endif
                                             </div>
                                             <span class="text-white font-medium">{{ $product->name }}</span>
                                         </div>

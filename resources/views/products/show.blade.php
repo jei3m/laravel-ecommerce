@@ -33,7 +33,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Product Image Section -->
                     <div class="relative rounded-[24px] overflow-hidden aspect-square">
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="absolute inset-0 w-full h-full object-cover">
+                        @if(str_starts_with($product->image, 'http'))
+                            <img src="{{ $product->getImageUrl() }}" alt="{{ $product->name }}" class="absolute inset-0 w-full h-full object-cover">
+                        @else
+                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="absolute inset-0 w-full h-full object-cover">
+                        @endif
                     </div>
 
                     <!-- Product Details Section -->
@@ -51,24 +55,12 @@
                                 <span class="inline-flex items-center bg-opacity-20 bg-spink px-3 py-1 rounded-lg">
                                    <p class="text-sm font-medium text-spink"> {{ $product->category }} </p>
                                 </span>
-                                <span class="inline-flex items-center bg-neutral text-white rounded-full text-md font-semibold justify-end">
-                                    <i class="fas fa-user text-xs lg:text-sm mr-2"></i> Seller: John Doe
-                                </span>
                             </div>
 
                             
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between mb-4">
                                 <div class="text-2xl text-white font-bold">
                                     ${{ number_format($product->price, 2) }}
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <form action="{{ route('products.destroy', $product) }}" method="POST" class="flex-none" id="deleteForm">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="text-red-500 p-2 transition-colors duration-200" onclick="confirmDelete()">
-                                            <i class="fas fa-trash"></i><span class="ml-2">Delete</span>
-                                        </button>
-                                    </form>
                                 </div>
                             </div>
 

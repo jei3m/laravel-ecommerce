@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('street_address')->nullable();
             $table->string('barangay')->nullable();
             $table->string('city')->nullable();
+            $table->string('province')->nullable();
+            $table->boolean('is_admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use App\Models\Rating;
 
 class Product extends Model
 {
@@ -12,14 +13,13 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'price',
         'description',
-        'image',
-        'category',
-        'rating',
-        'sold',
+        'price',
         'stock',
-        'user_id'
+        'image',
+        'sold',
+        'rating',
+        'category'
     ];
 
     protected $casts = [
@@ -29,8 +29,28 @@ class Product extends Model
         'stock' => 'integer'
     ];
 
+    protected $appends = ['image_url'];
+
+    public function getImageUrl()
+    {
+        if (str_starts_with($this->image, 'http')) {
+            return $this->image;
+        }
+        return asset('storage/' . $this->image);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->getImageUrl();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
     }
 }

@@ -22,7 +22,7 @@
                         </div>
                         <div>
                             <span class="text-gray-400">Payment Method:</span>
-                            <span class="text-white ml-2">{{ ucfirst($order->payment_method) }}</span>
+                            <span class="text-white ml-2">{{ strtoupper($order->payment_method) }}</span>
                         </div>
                         <div>
                             <span class="text-gray-400">Shipping Address:</span>

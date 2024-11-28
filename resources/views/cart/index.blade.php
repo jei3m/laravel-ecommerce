@@ -6,7 +6,7 @@
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Cart Items Section -->
                 <div class="lg:w-2/3">
-                    <div class="bg-neutral-900 rounded-[20px] p-6 h-[600px] flex flex-col">
+                    <div class="bg-neutral-900 rounded-[20px] p-6 h-full flex flex-col">
                         <h1 class="text-2xl font-bold text-white mb-6">Shopping Cart</h1>
                         
                         <!-- Cart Items Container -->
@@ -17,7 +17,11 @@
                                     @foreach($cartItems as $item)
                                         <div class="flex items-center justify-between p-4 border-b border-neutral-700 last:border-b-0">
                                             <div class="flex items-center gap-4">
-                                                <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg">
+                                                @if(str_starts_with($item->product->image, 'http'))
+                                                    <img src="{{ $item->product->getImageUrl() }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg">
+                                                @else
+                                                    <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg">
+                                                @endif
                                                 <div>
                                                     <h3 class="text-white font-semibold">{{ $item->product->name }}</h3>
                                                     <p class="text-gray-400">${{ number_format($item->product->price, 2) }}</p>
@@ -94,7 +98,7 @@
                                 @else
                                     <div class="bg-neutral-800 rounded-xl p-4 text-gray-400">
                                         <p class="mb-2">No shipping address set</p>
-                                        <a href="{{ route('profile.edit') }}" class="text-spink hover:text-spink/80 transition-colors">
+                                        <a href="/profile" class="text-spink hover:text-spink/80 transition-colors">
                                             Add shipping address →
                                         </a>
                                     </div>

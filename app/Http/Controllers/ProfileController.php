@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -24,9 +25,14 @@ class ProfileController extends Controller
             ->take(5)
             ->get();
 
+        $orderItemCount = Order::where('user_id', $user->id)
+            -> where('order_status', 'completed')
+            -> count();    
+
         return view('profile.index', [
             'user' => $user,
             'recentOrders' => $recentOrders,
+            'orderItemCount' => $orderItemCount,
         ]);
     }
 
@@ -83,6 +89,8 @@ class ProfileController extends Controller
     public function updateAddress(Request $request)
     {
         try {
+            Log::info('Address update request:', $request->all());
+            
             $validated = $request->validate([
                 'street_address' => 'nullable|string|max:255',
                 'barangay' => 'nullable|string|max:255',
@@ -90,20 +98,33 @@ class ProfileController extends Controller
                 'province' => 'nullable|string|max:255',
             ]);
 
+            Log::info('Validated data:', $validated);
+
             $user = Auth::user();
-            $user->update($validated);
+            $updated = $user->update($validated);
 
-            if ($request->ajax()) {
-                return response()->json(['success' => true, 'message' => 'Address updated successfully']);
+            Log::info('Update result:', ['success' => $updated]);
+
+            if (!$updated) {
+                throw new \Exception('Failed to update user address');
             }
 
-            return redirect()->back()->with('success', 'Address updated successfully');
+            return response()->json([
+                'success' => true,
+                'message' => 'Address updated successfully',
+                'data' => $validated
+            ]);
         } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Failed to update address'], 422);
-            }
+            Log::error('Address update error:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
-            return redirect()->back()->with('error', 'Failed to update address');
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update address',
+                'errors' => $e instanceof \Illuminate\Validation\ValidationException ? $e->errors() : ['error' => $e->getMessage()]
+            ], $e instanceof \Illuminate\Validation\ValidationException ? 422 : 500);
         }
     }
 }
