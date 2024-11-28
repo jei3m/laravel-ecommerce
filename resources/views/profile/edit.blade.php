@@ -4,14 +4,19 @@
     <div class="container mx-auto p-2 lg:p-12">
         <div class="bg-neutral-800 rounded-[30px] p-8">
             <div class="bg-neutral-900 rounded-[20px] p-6">
-                <div class="flex items-center space-x-4 mb-8">
-                    <div class="w-16 h-16 rounded-full bg-neutral-800 flex items-center justify-center">
-                        <i class="fas fa-user text-2xl text-spink"></i>
+                <div class="flex justify-between items-center mb-8">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-full bg-neutral-800 flex items-center justify-center">
+                            <i class="fas fa-user text-2xl text-spink"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-white">Edit Profile</h1>
+                            <p class="text-gray-400">Update your account settings and preferences</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 class="text-2xl font-bold text-white">Edit Profile</h1>
-                        <p class="text-gray-400">Update your account settings and preferences</p>
-                    </div>
+                    <a href="/profile" class="bg-neutral-800 text-white font-bold py-2 px-4 rounded-xl">
+                        <i class="fas fa-arrow-left mr-2"></i>Back
+                    </a>
                 </div>
 
                 <div class="space-y-8">

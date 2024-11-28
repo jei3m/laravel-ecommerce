@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+<x-header />
+
 <div class="container mx-auto pt-10 p-2 lg:p-0">
     <div class="bg-neutral-800 rounded-[30px] p-8">
         <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data">
@@ -45,8 +47,8 @@
                             </div>
                         </div>
 
-                        <div class="bg-neutral-700 rounded-[20px] p-6 mb-6">
-                            <label for="description" class="block text-xl font-semibold text-white mb-4">Product Description</label>
+                        <div class="bg-neutral-700 rounded-[20px] p-4 mb-6">
+                            <label for="description" class="block text-xl font-semibold text-white mb-2">Product Description</label>
                             <textarea id="description" name="description" rows="4"
                                 class="w-full bg-neutral-800 border border-neutral-600 text-white rounded-xl p-4 focus:outline-none focus:border-spink">{{ $product->description }}</textarea>
                         </div>

@@ -63,6 +63,44 @@
                     <div class="bg-neutral-900 rounded-[20px] p-6 h-full flex flex-col">
                         <div class="flex-grow">
                             <h2 class="text-xl font-bold text-white mb-6">Order Summary</h2>
+                            
+                            <!-- Shipping Address -->
+                            <div class="mb-6">
+                                <h3 class="text-lg text-white mb-3">Shipping Address</h3>
+                                @if(auth()->user()->street_address)
+                                    <div class="bg-neutral-800 rounded-xl p-4 text-gray-300 space-y-2">
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <span class="text-gray-400">Street Address:</span>
+                                            <span class="col-span-2">{{ auth()->user()->street_address }}</span>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <span class="text-gray-400">Barangay:</span>
+                                            <span class="col-span-2">{{ auth()->user()->barangay }}</span>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <span class="text-gray-400">City:</span>
+                                            <span class="col-span-2">{{ auth()->user()->city }}</span>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <span class="text-gray-400">Province:</span>
+                                            <span class="col-span-2">{{ auth()->user()->province }}</span>
+                                        </div>
+                                        <div class="pt-2">
+                                            <a href="/profile" class="text-spink hover:text-spink/80 transition-colors text-sm">
+                                                Edit address →
+                                            </a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="bg-neutral-800 rounded-xl p-4 text-gray-400">
+                                        <p class="mb-2">No shipping address set</p>
+                                        <a href="{{ route('profile.edit') }}" class="text-spink hover:text-spink/80 transition-colors">
+                                            Add shipping address →
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+
                             <div class="space-y-4">
                                 <div class="flex justify-between text-white">
                                     <span>Subtotal</span>
@@ -117,20 +155,76 @@
         }
 
         function removeFromCart(id) {
-            if (confirm('Are you sure you want to remove this item?')) {
-                fetch(`/cart/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    }
-                });
-            }
+            Swal.fire({
+                title: 'Remove Item',
+                text: 'Are you sure you want to remove this item from your cart?',
+                icon: 'warning',
+                iconColor: '#Ff91a4',
+                showCancelButton: true,
+                confirmButtonText: 'Remove',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#374151',
+                background: '#171717',
+                color: '#ffffff',
+                customClass: {
+                    popup: 'rounded-[20px] border border-neutral-800',
+                    confirmButton: 'rounded-xl',
+                    cancelButton: 'rounded-xl'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Removing...',
+                        text: 'Removing item from cart',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        background: '#171717',
+                        color: '#ffffff',
+                        customClass: {
+                            popup: 'rounded-[20px] border border-neutral-800'
+                        },
+                        willOpen: () => {
+                            Swal.showLoading();
+                        },
+                        didOpen: () => {
+                            const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
+                            if (loader) {
+                                loader.style.borderLeftColor = '#Ff91a4';
+                            }
+                        }
+                    });
+
+                    fetch(`/cart/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Item removed from cart',
+                                iconColor: '#22c55e',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                background: '#171717',
+                                color: '#ffffff',
+                                customClass: {
+                                    popup: 'rounded-[20px] border border-neutral-800'
+                                }
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        }
+                    });
+                }
+            });
         }
     </script>
     @endpush

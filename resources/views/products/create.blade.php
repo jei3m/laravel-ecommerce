@@ -69,7 +69,6 @@
                                     id="price"
                                     type="number"
                                     name="price"
-                                    step="10"
                                     value="{{ old('price') }}"
                                     required>
                             </div>

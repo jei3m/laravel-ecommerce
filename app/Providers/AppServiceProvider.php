@@ -20,7 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Register the app layout as a component
-        Blade::component('layouts.app', 'app-layout');
+        // Move Blade component registration to the end of boot method
+        $this->app->booted(function() {
+            Blade::component('layouts.app', 'app-layout');
+        });
     }
 }

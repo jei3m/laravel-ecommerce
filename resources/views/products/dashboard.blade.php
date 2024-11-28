@@ -94,10 +94,19 @@
                 title: 'Delete Product',
                 text: "This action cannot be undone",
                 icon: 'warning',
+                iconColor: '#Ff91a4',
                 showCancelButton: true,
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel',
                 confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Yes, delete it!'
+                cancelButtonColor: '#374151',
+                background: '#171717',
+                color: '#ffffff',
+                customClass: {
+                    popup: 'rounded-[20px] border border-neutral-800',
+                    confirmButton: 'rounded-xl',
+                    cancelButton: 'rounded-xl'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('delete-form-' + productId).submit();

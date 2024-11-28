@@ -35,49 +35,60 @@
                     </div>
 
                     <div class="border-b border-neutral-800 pb-4">
-                        <h2 class="text-xl font-semibold text-white mb-4">Home Address</h2>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label for="street" class="block text-sm font-medium text-gray-400">House/Unit & Street</label>
-                                <input 
-                                    type="text" 
-                                    id="street" 
-                                    name="street" 
-                                    value="Unit 1234, Palm Street"
-                                    class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
-                                >
-                            </div>
-                            <div>
-                                <label for="barangay" class="block text-sm font-medium text-gray-400">Barangay</label>
-                                <input 
-                                    type="text" 
-                                    id="barangay" 
-                                    name="barangay" 
-                                    value="Brgy. San Antonio"
-                                    class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
-                                >
-                            </div>
-                            <div>
-                                <label for="city" class="block text-sm font-medium text-gray-400">City/Municipality</label>
-                                <input 
-                                    type="text" 
-                                    id="city" 
-                                    name="city" 
-                                    value="Makati City"
-                                    class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
-                                >
-                            </div>
-                            <div>
-                                <label for="province" class="block text-sm font-medium text-gray-400">Province & ZIP</label>
-                                <input 
-                                    type="text" 
-                                    id="province" 
-                                    name="province" 
-                                    value="Metro Manila, 1200"
-                                    class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
-                                >
-                            </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold text-white">Address Information</h2>
                         </div>
+                        <form id="address-form" action="{{ route('profile.update-address') }}" method="POST" onsubmit="return saveAddress()">
+                            @csrf
+                            @method('PUT')
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="street_address" class="block text-sm font-medium text-gray-400">House/Unit & Street</label>
+                                    <input 
+                                        type="text" 
+                                        id="street_address" 
+                                        name="street_address" 
+                                        value="{{ $user->street_address }}"
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                    >
+                                </div>
+                                <div>
+                                    <label for="barangay" class="block text-sm font-medium text-gray-400">Barangay</label>
+                                    <input 
+                                        type="text" 
+                                        id="barangay" 
+                                        name="barangay" 
+                                        value="{{ $user->barangay }}"
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                    >
+                                </div>
+                                <div>
+                                    <label for="city" class="block text-sm font-medium text-gray-400">City</label>
+                                    <input 
+                                        type="text" 
+                                        id="city" 
+                                        name="city" 
+                                        value="{{ $user->city }}"
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                    >
+                                </div>
+                                <div>
+                                    <label for="province" class="block text-sm font-medium text-gray-400">Province</label>
+                                    <input 
+                                        type="text" 
+                                        id="province" 
+                                        name="province" 
+                                        value="{{ $user->province }}"
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                    >
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button type="button" onclick="saveAddress()" class="bg-spink text-white font-bold py-2 px-4 rounded-xl">
+                                    <i class="fas fa-save mr-2"></i>Update Address
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="border-b border-neutral-800 pb-4">
@@ -89,11 +100,7 @@
                                     <div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center group-hover:bg-neutral-800/80 transition-colors">
                                         <i class="fas fa-shopping-cart text-spink"></i>
                                     </div>
-                                    @php
-                                        $cartItems = session()->get('cart', []);
-                                        $itemCount = collect($cartItems)->sum('quantity');
-                                    @endphp
-                                    <p class="text-white text-lg">{{ $itemCount }} {{ Str::plural('item', $itemCount) }} in cart</p>
+                                    <p class="text-white text-lg">{{ $cartItemCount }} {{ Str::plural('item', $cartItemCount) }} in cart</p>
                                 </a>
                             </div>
                             <div>
@@ -117,15 +124,21 @@
 
                     <div class="pb-4">
                         <div class="flex justify-between">
-                            <form method="POST" action="{{ route('profile.destroy') }}" class="inline-block">
+                            <form method="POST" action="{{ route('profile.destroy') }}" class="inline-block" id="deleteAccountForm">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="py-2 px-4 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">
-                                    Delete Account
+                                <button onclick="confirmDelete()" type="button" class="py-2 px-4 bg-red-500 text-white font-semibold rounded-lg">
+                                    <i class="fas fa-trash-alt mr-2"></i>Delete Account
                                 </button>
                             </form>
-                            <a href="{{ route('profile.edit') }}" class="inline-block py-2 px-4 bg-spink text-white font-semibold rounded-lg hover:bg-pink-600 transition-colors">
-                                Edit Profile
+                            <form method="POST" action="{{ route('logout') }}" class="inline-block" id="logoutForm">
+                                @csrf
+                                <button onclick="confirmLogout()" type="button" class="py-2 px-4 bg-neutral-700 text-white font-semibold rounded-lg">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </button>   
+                            </form>
+                            <a href="{{ route('profile.edit') }}" class="inline-block py-2 px-4 bg-spink text-white font-semibold rounded-lg">
+                                <i class="fas fa-user-edit mr-2"></i>Edit Profile
                             </a>
                         </div>
                     </div>
@@ -134,3 +147,148 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('scripts')
+<script>
+
+    // Custom styling for SweetAlert2
+    const swalCustom = Swal.mixin({
+        customClass: {
+            confirmButton: 'bg-spink text-white font-bold py-2 px-4 rounded-xl transition-colors hover:bg-pink-600 mr-2',
+            cancelButton: 'bg-neutral-600 text-white font-bold py-2 px-4 rounded-xl transition-colors hover:bg-neutral-700',
+            popup: 'rounded-[20px] border border-neutral-800'
+        },
+        buttonsStyling: false,
+        background: '#171717',
+        color: '#fff'
+    });
+
+    function confirmDelete() {
+        Swal.fire({
+            title: 'Delete Account',
+            text:'Please enter your password to confirm deletion',
+            input:'password',
+            inputAttributes: {
+                autocapitalize:'off',
+                required:'true',
+            },
+            showCancelButton:'true',
+            confirmButtonText:'Delete Account',
+            confirmButtonColor: '#Ff91a4',
+            cancelButtonColor: '#374151',
+            background:'#171717',
+            color:'#ffffff',
+            customClass: {
+                input: 'bg-neutral-800 border-neutral-700 text-white rounded-xl',
+                popup: 'rounded-[20px] border border-neutral-800',
+                confirmButton: 'rounded-xl',
+                cancelButton: 'rounded-xl'
+            },
+            preConfirm: (password) => {
+                const form = document.getElementById('deleteAccountForm');
+                const passwordInput = document.createElement('input');
+                passwordInput.type = 'hidden';
+                passwordInput.name = 'password';
+                passwordInput.value = password;
+                form.appendChild(passwordInput);
+                form.submit();
+            }
+        })
+    }
+
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Logout',
+            text: 'Are you sure you want to logout?',
+            showCancelButton: true,
+            confirmButtonText: 'Logout',
+            confirmButtonColor: '#Ff91a4',
+            cancelButtonColor: '#374151',
+            background: '#171717',
+            color: '#ffffff',
+            customClass: {
+                popup: 'rounded-[20px] border border-neutral-800',
+                confirmButton: 'rounded-xl',
+                cancelButton: 'rounded-xl'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logoutForm').submit();
+            }
+        });
+    }
+
+    function saveAddress() {
+        const form = document.getElementById('address-form');
+        const formData = new FormData(form);
+
+        // Show loading state
+        swalCustom.fire({
+            title: 'Saving...',
+            text: 'Updating your address information',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            },
+            didOpen: () => {
+                // Custom styling for loader
+                const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
+                if (loader) {
+                    loader.style.borderLeftColor = '#ec4899';
+                }
+            }
+        });
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                swalCustom.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Your address has been updated successfully',
+                    iconColor: '#22c55e',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    buttonsStyling: true,
+                    confirmButtonColor: '#Ff91a4',
+                    customClass: {
+                        popup: 'rounded-[20px] border border-neutral-800',
+                        confirmButton: 'rounded-xl font-bold',
+                        icon: 'border-green-500 text-green-500'
+                    }
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                swalCustom.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to update address. Please try again.',
+                    iconColor: '#ec4899',
+                    confirmButtonText: 'Try Again'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            swalCustom.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while updating your address',
+                iconColor: '#ec4899',
+                confirmButtonText: 'OK'
+            });
+        });
+
+        return false; // Prevent form submission
+    }
+</script>    

@@ -67,4 +67,34 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    /**
+     * Update the user's address.
+     */
+    public function updateAddress(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'street_address' => 'nullable|string|max:255',
+                'barangay' => 'nullable|string|max:255',
+                'city' => 'nullable|string|max:255',
+                'province' => 'nullable|string|max:255',
+            ]);
+
+            $user = Auth::user();
+            $user->update($validated);
+
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Address updated successfully']);
+            }
+
+            return redirect()->back()->with('success', 'Address updated successfully');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Failed to update address'], 422);
+            }
+
+            return redirect()->back()->with('error', 'Failed to update address');
+        }
+    }
 }

@@ -3,27 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\CartItem;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart', []);
-        $cartItems = collect();
-        $subtotal = 0;
+        $cartItems = CartItem::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
 
-        foreach ($cart as $id => $details) {
-            $product = Product::find($id);
-            if ($product) {
-                $cartItems->push((object)[
-                    'id' => $id,
-                    'product' => $product,
-                    'quantity' => $details['quantity']
-                ]);
-                $subtotal += $product->price * $details['quantity'];
-            }
-        }
+        $subtotal = $cartItems->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        });
 
         $shipping = $cartItems->count() > 0 ? 10 : 0;
         $tax = $subtotal * 0.1; // 10% tax
@@ -34,18 +27,20 @@ class CartController extends Controller
 
     public function addToCart(Request $request, Product $product)
     {
-        $cart = session()->get('cart', []);
-        
-        if (isset($cart[$product->id])) {
-            $cart[$product->id]['quantity']++;
+        $cartItem = CartItem::where('user_id', auth()->id())
+            ->where('product_id', $product->id)
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->increment('quantity');
         } else {
-            $cart[$product->id] = [
+            CartItem::create([
+                'user_id' => auth()->id(),
+                'product_id' => $product->id,
                 'quantity' => 1
-            ];
+            ]);
         }
-        
-        session()->put('cart', $cart);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Product added to cart successfully!'
@@ -54,17 +49,16 @@ class CartController extends Controller
 
     public function updateQuantity(Request $request)
     {
-        $cart = session()->get('cart', []);
-        $id = $request->input('id');
-        $action = $request->input('action');
+        $cartItem = CartItem::where('user_id', auth()->id())
+            ->where('id', $request->input('id'))
+            ->first();
 
-        if (isset($cart[$id])) {
-            if ($action === 'increase') {
-                $cart[$id]['quantity']++;
-            } elseif ($action === 'decrease' && $cart[$id]['quantity'] > 1) {
-                $cart[$id]['quantity']--;
+        if ($cartItem) {
+            if ($request->input('action') === 'increase') {
+                $cartItem->increment('quantity');
+            } elseif ($request->input('action') === 'decrease' && $cartItem->quantity > 1) {
+                $cartItem->decrement('quantity');
             }
-            session()->put('cart', $cart);
             return response()->json(['success' => true]);
         }
 
@@ -73,11 +67,12 @@ class CartController extends Controller
 
     public function destroy($id)
     {
-        $cart = session()->get('cart', []);
+        $cartItem = CartItem::where('user_id', auth()->id())
+            ->where('id', $id)
+            ->first();
         
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
+        if ($cartItem) {
+            $cartItem->delete();
             return response()->json(['success' => true]);
         }
 
