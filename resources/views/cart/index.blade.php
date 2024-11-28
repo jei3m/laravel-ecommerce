@@ -122,10 +122,41 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- Payment Method Selection -->
+                        <div class="mt-6">
+                            <h3 class="text-lg text-white mb-3">Payment Method</h3>
+                            <form action="{{ route('orders.store') }}" method="POST" class="space-y-4">
+                                @csrf
+                                <div class="space-y-3">
+                                    <label class="flex items-center bg-neutral-800 rounded-xl p-4 cursor-pointer hover:bg-neutral-800/80 transition-colors">
+                                        <input type="radio" name="payment_method" value="cod" class="mr-3 text-spink focus:ring-spink" checked>
+                                        <div>
+                                            <p class="text-white font-medium">Cash on Delivery</p>
+                                            <p class="text-gray-400 text-sm">Pay when you receive your order</p>
+                                        </div>
+                                    </label>
+                                    
+                                    <label class="flex items-center bg-neutral-800 rounded-xl p-4 cursor-pointer hover:bg-neutral-800/80 transition-colors">
+                                        <input type="radio" name="payment_method" value="online" class="mr-3 text-spink focus:ring-spink">
+                                        <div>
+                                            <p class="text-white font-medium">Online Payment</p>
+                                            <p class="text-gray-400 text-sm">Pay securely with your credit/debit card</p>
+                                        </div>
+                                    </label>
+                                </div>
 
-                        <button class="w-full py-3 bg-spink text-white font-semibold rounded-lg hover:bg-pink-600 transition-colors mt-6">
-                            Proceed to Checkout
-                        </button>
+                                <button type="submit" 
+                                    @if(!auth()->user()->street_address) disabled @endif
+                                    class="w-full bg-spink hover:bg-spink/80 text-white font-medium py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6">
+                                    @if(!auth()->user()->street_address)
+                                        Please Add Shipping Address
+                                    @else
+                                        Place Order
+                                    @endif
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -116,10 +116,56 @@
                     </div>
 
                     <div class="border-b border-neutral-800 pb-4">
-                        <h2 class="text-xl font-semibold text-white mb-4">Recent Checkouts</h2>
-                        <div class="bg-neutral-800 rounded-[15px] p-4">
-                            <x-checkout-json />
-                        </div>
+                        <h2 class="text-xl font-semibold text-white mb-4">Recent Orders</h2>
+                        @if($recentOrders->isEmpty())
+                            <p class="text-gray-400">No orders yet.</p>
+                        @else
+                            <div class="space-y-4">
+                                @foreach($recentOrders as $order)
+                                    <div class="bg-neutral-800 rounded-xl p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <span class="text-sm text-gray-400">Order #{{ $order->id }}</span>
+                                                <p class="text-white font-semibold">${{ number_format($order->total_amount, 2) }}</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-sm text-gray-400">{{ $order->created_at->format('M d, Y') }}</span>
+                                                <p class="text-sm">
+                                                    @if($order->order_status === 'pending')
+                                                        <span class="text-yellow-500">Pending</span>
+                                                    @elseif($order->order_status === 'processing')
+                                                        <span class="text-blue-500">Processing</span>
+                                                    @elseif($order->order_status === 'completed')
+                                                        <span class="text-green-500">Completed</span>
+                                                    @elseif($order->order_status === 'cancelled')
+                                                        <span class="text-red-500">Cancelled</span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <div class="text-sm text-gray-400 mb-2">Items:</div>
+                                            <div class="space-y-3">
+                                                @foreach($order->items as $item)
+                                                    <div class="flex items-center space-x-3">
+                                                        <img src="{{ asset('storage/' . $item->product->image) }}" 
+                                                            alt="{{ $item->product->name }}" 
+                                                            class="w-12 h-12 object-cover rounded-lg">
+                                                        <div class="flex-1">
+                                                            <div class="flex justify-between">
+                                                                <span class="text-white">{{ $item->product->name }}</span>
+                                                                <span class="text-gray-400">${{ number_format($item->price * $item->quantity, 2) }}</span>
+                                                            </div>
+                                                            <span class="text-sm text-gray-400">Qty: {{ $item->quantity }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
 
                     <div class="pb-4">
