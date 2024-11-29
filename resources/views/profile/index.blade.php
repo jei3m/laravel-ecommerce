@@ -177,6 +177,37 @@
                                                                 <div>
                                                                     <h3 class="text-white font-medium">{{ $item->product->name }}</h3>
                                                                     <span class="text-sm text-gray-400">Qty: {{ $item->quantity }}</span>
+                                                                    @if($order->order_status === 'completed')
+                                                                        @php
+                                                                            $userRating = $item->product->ratings()
+                                                                                ->where('user_id', auth()->id())
+                                                                                ->where('order_id', $order->id)
+                                                                                ->first();
+                                                                        @endphp
+                                                                        @if(!$userRating)
+                                                                            <form action="{{ route('ratings.store') }}" method="POST" class="mt-2">
+                                                                                @csrf
+                                                                                <input type="hidden" name="product_id" value="{{ $item->product->id }}">
+                                                                                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                                                <div class="flex items-center gap-2">
+                                                                                    <select name="rating" onchange="toggleSubmitButton(this)" class="bg-neutral-700 text-white text-sm rounded-lg px-2 py-1">
+                                                                                        <option value="">Rate</option>
+                                                                                        @for($i = 1; $i <= 5; $i++)
+                                                                                            <option value="{{ $i }}">{{ $i }} ★</option>
+                                                                                        @endfor
+                                                                                    </select>
+                                                                                    <button type="submit" id="submitRating" style="display: none;" class="bg-spink text-white text-sm px-3 py-1 rounded-lg">
+                                                                                        Submit
+                                                                                    </button>
+                                                                                </div>
+                                                                            </form>
+                                                                        @else
+                                                                            <div class="mt-2 flex items-center gap-2">
+                                                                                <span class="text-gray-400 text-sm">Your rating:</span>
+                                                                                <span class="text-yellow-500 text-sm font-medium">{{ $userRating->rating }} ★</span>
+                                                                            </div>
+                                                                        @endif
+                                                                    @endif
                                                                 </div>
                                                                 <div class="text-right">
                                                                     <span class="text-md text-white font-bold"> $ {{ $item->price }}</span>
@@ -448,6 +479,11 @@
                         window.location.href = cancelUrl;
                     }
                 });
+            }
+
+            function toggleSubmitButton(select) {
+                const submitButton = select.parentElement.querySelector('#submitRating');
+                submitButton.style.display = select.value ? 'block' : 'none';
             }
         </script>
     @endpush

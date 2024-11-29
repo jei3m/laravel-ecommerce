@@ -14,8 +14,9 @@
                 <div class="flex justify-between items-center mb-1">
                     <h3 class="text-lg font-semibold text-white">{{ $product->name }}</h3>
                     <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star mr-1"></i>
-                        <span class="text-white">{{ number_format($product->rating, 1) }}</span>
+                        <span class="text-white mr-1">{{ number_format($product->average_rating, 1) }}</span>
+                        <i class="fas fa-star mb-1"></i>
+                        {{-- <span>({{ $product->ratings->count() }})</span> --}}
                     </div>
                 </div>
                 <p class="text-md text-gray-300 mb-2">{{ $product->category }}</p>

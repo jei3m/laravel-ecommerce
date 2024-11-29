@@ -51,8 +51,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payment/{order}/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 
     // Rating Routes
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
         Route::put('/ratings/{rating}', [RatingController::class, 'update'])->name('ratings.update');
     });
 

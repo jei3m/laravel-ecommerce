@@ -34,8 +34,22 @@ class CartController extends Controller
             ->first();
 
         if ($cartItem) {
+            // Check if increasing quantity would exceed stock
+            if ($cartItem->quantity >= $product->stock) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot add more items. Stock limit reached.'
+                ]);
+            }
             $cartItem->increment('quantity');
         } else {
+            // Check if product has stock available
+            if ($product->stock < 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product is out of stock.'
+                ]);
+            }
             CartItem::create([
                 'user_id' => auth()->id(),
                 'product_id' => $product->id,
@@ -58,6 +72,13 @@ class CartController extends Controller
 
         if ($cartItem) {
             if ($request->input('action') === 'increase') {
+                // Check if increasing quantity would exceed stock
+                if ($cartItem->quantity >= $cartItem->product->stock) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Cannot add more items. Stock limit reached.'
+                    ]);
+                }
                 $cartItem->increment('quantity');
             } elseif ($request->input('action') === 'decrease' && $cartItem->quantity > 1) {
                 $cartItem->decrement('quantity');

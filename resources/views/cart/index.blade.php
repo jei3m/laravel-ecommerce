@@ -31,11 +31,15 @@
                                             <div class="flex items-center justify-between sm:justify-end gap-4 pl-20 sm:pl-0">
                                                 <div class="flex items-center gap-2">
                                                     <div class="flex items-center bg-neutral-800 rounded-lg">
-                                                        <button onclick="updateQuantity({{ $item->id }}, 'decrease')" class="px-3 py-1.5 text-white hover:text-spink transition-colors">
+                                                        <button onclick="updateQuantity({{ $item->id }}, 'decrease')" 
+                                                            class="px-3 py-1.5 text-white hover:text-spink transition-colors"
+                                                            {{ $item->quantity <= 1 ? 'disabled' : '' }}>
                                                             <i class="fas fa-minus text-sm"></i>
                                                         </button>
                                                         <span class="px-3 text-white min-w-[2rem] text-center">{{ $item->quantity }}</span>
-                                                        <button onclick="updateQuantity({{ $item->id }}, 'increase')" class="px-3 py-1.5 text-white hover:text-spink transition-colors">
+                                                        <button onclick="updateQuantity({{ $item->id }}, 'increase')" 
+                                                            class="px-3 py-1.5 text-white hover:text-spink transition-colors"
+                                                            {{ $item->quantity >= $item->product->stock ? 'disabled' : '' }}>
                                                             <i class="fas fa-plus text-sm"></i>
                                                         </button>
                                                     </div>
@@ -187,6 +191,18 @@
             .then(data => {
                 if (data.success) {
                     window.location.reload();
+                } else if (data.error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.error,
+                        iconColor: '#ef4444',
+                        background: '#171717',
+                        color: '#ffffff',
+                        customClass: {
+                            popup: 'rounded-[20px] border border-neutral-800'
+                        }
+                    });
                 }
             });
         }

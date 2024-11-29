@@ -13,12 +13,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->integer('rating')->default(0);
+            $table->integer('rating');
             $table->text('review')->nullable();
             $table->timestamps();
-            
-            // Ensure a user can only rate a product once per order
-            $table->unique(['user_id', 'product_id', 'order_id']);
         });
     }
 

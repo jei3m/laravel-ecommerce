@@ -29,7 +29,7 @@ class Product extends Model
         'stock' => 'integer'
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url', 'average_rating'];
 
     public function getImageUrl()
     {
@@ -52,5 +52,10 @@ class Product extends Model
     public function ratings()
     {
         return $this->hasMany(Rating::class);
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->ratings()->avg('rating') ?? 0;
     }
 }

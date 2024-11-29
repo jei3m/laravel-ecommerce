@@ -10,7 +10,8 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::orderBy('sold', 'desc')
+        $products = Product::withAvg('ratings', 'rating')
+            ->orderByDesc('ratings_avg_rating')
             ->take(4)
             ->get();
 
