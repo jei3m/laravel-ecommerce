@@ -6,7 +6,9 @@
             <div class="flex flex-col space-y-6">
                 <div class="flex justify-between items-center bg-neutral-900 rounded">
                     <h1 class="text-3xl font-bold text-white">
-                        @if($selectedCategory)
+                        @if(isset($query))
+                            Search Results for "<span class="text-spink">{{ $query }}</span>"
+                        @elseif($selectedCategory)
                             <span class="text-spink">{{ $selectedCategory }}</span> Products
                         @else
                             <span class="underline decoration-white decoration-2">All</span> <span class="text-spink">Products</span>
@@ -68,11 +70,21 @@
     <script>
         function applyFilter(type, value) {
             let url = new URL(window.location.href);
+            
+            // Preserve search query if it exists
+            const searchQuery = url.searchParams.get('query');
+            
             if (value) {
                 url.searchParams.set(type, value);
             } else {
                 url.searchParams.delete(type);
             }
+            
+            // Re-add search query if it existed
+            if (searchQuery) {
+                url.searchParams.set('query', searchQuery);
+            }
+            
             window.location.href = url.toString();
         }
 
@@ -80,12 +92,20 @@
             let url = new URL(window.location.href);
             url.searchParams.delete(type);
             
+            // Preserve search query if it exists
+            const searchQuery = url.searchParams.get('query');
+            
             // Preserve sort parameter when clearing other filters
             if (type !== 'sort') {
                 let sort = document.getElementById('sortFilter').value;
                 if (sort) {
                     url.searchParams.set('sort', sort);
                 }
+            }
+            
+            // Re-add search query if it existed
+            if (searchQuery) {
+                url.searchParams.set('query', searchQuery);
             }
             
             window.location.href = url.toString();

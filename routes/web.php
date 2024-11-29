@@ -26,7 +26,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    Route::get('/browse', [ProductController::class, 'browse'])->name('products.browse');
+    // Product Routes
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/browse', [ProductController::class, 'browse'])->name('products.browse');
+    Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
     Route::resource('products', ProductController::class);
 
     // Cart Routes

@@ -59,6 +59,59 @@ class ProductController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $searchQuery = $request->get('query');
+        $query = Product::query();
+        
+        // Apply search filter
+        if ($searchQuery) {
+            $query->where(function($q) use ($searchQuery) {
+                $q->where('name', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('description', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('category', 'like', '%' . $searchQuery . '%');
+            });
+        }
+
+        // Category filtering
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'price_low'); // Default to 'price_low'
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            default:
+                $query->orderBy('price', 'asc'); // Default to 'price_low'
+                break;
+        }
+
+        // Get products with pagination
+        $products = $query->paginate(12)->withQueryString();
+        
+        // Get unique categories for the filter dropdown
+        $categories = Product::select('category')
+            ->distinct()
+            ->whereNotNull('category')
+            ->pluck('category')
+            ->sort()
+            ->values();
+
+        return view('products.browse', [
+            'products' => $products,
+            'categories' => $categories,
+            'selectedCategory' => $request->category,
+            'selectedSort' => $sort,
+            'searchQuery' => $searchQuery
+        ]);
+    }
+
     public function dashboard()
     {
         $products = Product::latest()
