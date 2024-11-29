@@ -80,5 +80,8 @@ class User extends Authenticatable
         return $this->is_admin;
     }
     
-
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
 }

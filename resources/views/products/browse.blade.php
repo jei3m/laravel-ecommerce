@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-header />
 
-    <div class="container mx-auto p-2 lg:p-14 bg-neutral-800 rounded-[30px]">
+    <div class="container mx-auto p-2 lg:p-14 bg-neutral-800 rounded-[30px] mb-10">
         <div class="bg-neutral-900 rounded-[20px] p-7">
             <div class="flex flex-col space-y-6">
                 <div class="flex justify-between items-center bg-neutral-900 rounded">

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-header />
     
-    <div class="container mx-auto p-2 lg:p-14 bg-neutral-800 rounded-[30px]">
+    <div class="container mx-auto p-2 lg:p-14 bg-neutral-800 rounded-[30px] mb-10">
         <x-hero />
         
         <div class="bg-neutral-900 rounded-[20px] p-7">

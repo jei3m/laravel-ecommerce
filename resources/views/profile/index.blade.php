@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-header />
     
-    <div class="container mx-auto p-2 lg:p-12 bg-neutral-800 rounded-[30px]">
+    <div class="container mx-auto p-2 lg:p-12 bg-neutral-800 rounded-[30px] mb-10">
         <div class="w-auto mx-auto">
             <div class="bg-neutral-900 rounded-[20px] p-5">
                 <div class="flex items-center justify-between mb-6">
@@ -136,7 +136,8 @@
                                         <div class="flex justify-between items-start mb-2">
                                             <div>
                                                 <span class="text-md text-white">Order #{{ $order->id }}</span>
-                                                <p class="text-sm">
+                                                <p class="text-md font-bold text-white mb-2">${{ number_format($order->total_amount, 2) }}</p>
+                                                <p class="text-md">
                                                     @if($order->order_status === 'pending')
                                                         <span class="text-yellow-500">Pending</span>
                                              
@@ -178,31 +179,37 @@
                                                                     <span class="text-sm text-gray-400">Qty: {{ $item->quantity }}</span>
                                                                 </div>
                                                                 <div class="text-right">
-                                                                    <p class="text-md font-bold text-white mb-3">${{ number_format($order->total_amount, 2) }}</p>
-                                                                    @if($order->payment_method === 'online' && $order->payment_status === 'pending')
-                                                                        <div class="flex gap-2 justify-end">
-                                                                            <button type="button" 
-                                                                                onclick="confirmOrderCancel('{{ route('orders.cancel', $order) }}')"
-                                                                                class="inline-block bg-red-700 text-white text-sm font-bold py-1.5 px-4 rounded-xl transition-colors">
-                                                                                <i class="fas fa-times mr-1"></i>Cancel
-                                                                            </button>
-                                                                            <a href="{{ route('payment.process', $order) }}" 
-                                                                                class="inline-block bg-[#0070BA] hover:bg-[#003087] text-white text-sm font-bold py-1.5 px-4 rounded-xl transition-colors">
-                                                                                <i class="fab fa-paypal mr-1"></i>Pay Now
-                                                                            </a>
-                                                                        </div>
-                                                                    @elseif($order->payment_method === 'cod' && $order->payment_status === 'pending')
-                                                                        <button type="button" 
-                                                                            onclick="confirmOrderCancel('{{ route('orders.cancel', $order) }}')"
-                                                                            class="inline-block bg-red-700 text-white text-sm font-bold py-1.5 px-4 rounded-xl transition-colors">
-                                                                            <i class="fas fa-times mr-1"></i>Cancel
-                                                                        </button>
-                                                                    @endif
+                                                                    <span class="text-md text-white font-bold"> $ {{ $item->price }}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 @endforeach
+
+                                                <div class="border-t border-neutral-700">
+                                                    @if($order->payment_method === 'online' && $order->payment_status === 'pending')
+                                                    <div class="flex gap-2 justify-end mt-4">
+                                                        <button type="button" 
+                                                            onclick="confirmOrderCancel('{{ route('orders.cancel', $order) }}')"
+                                                            class="inline-block bg-red-700 text-white text-sm font-bold py-1.5 px-4 rounded-xl">
+                                                            <i class="fas fa-times mr-1"></i>Cancel
+                                                        </button>
+                                                        <a href="{{ route('payment.process', $order) }}" 
+                                                            class="inline-block bg-[#0070BA] hover:bg-[#003087] text-white text-sm font-bold py-1.5 px-4 rounded-xl transition-colors">
+                                                            <i class="fab fa-paypal mr-1"></i>Pay Now
+                                                        </a>
+                                                    </div>
+                                                    @elseif($order->payment_method === 'cod' && $order->payment_status === 'pending')
+                                                        <div class="mt-4">
+                                                            <button type="button" 
+                                                                onclick="confirmOrderCancel('{{ route('orders.cancel', $order) }}')"
+                                                                class="bg-red-700 text-white text-sm font-bold py-1.5 px-4 rounded-xl">
+                                                                <i class="fas fa-times mr-1"></i>Cancel
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -212,25 +219,26 @@
                     </div>
 
                     <div class="pb-4">
-                        <div class="flex justify-between">
-                            <form method="POST" action="{{ route('profile.destroy') }}" class="inline-block" id="deleteAccountForm">
+                        <div class="flex flex-wrap gap-2 justify-between md:flex-nowrap">
+                            <form method="POST" action="{{ route('profile.destroy') }}" class="inline-block w-full md:w-auto" id="deleteAccountForm">
                                 @csrf
                                 @method('DELETE')
-                                <button onclick="confirmDelete()" type="button" class="py-2 px-4 bg-red-500 text-white font-semibold rounded-lg">
+                                <button onclick="confirmDelete()" type="button" class="w-full md:w-auto py-2 px-4 bg-red-500 text-white font-semibold rounded-lg">
                                     <i class="fas fa-trash-alt mr-2"></i>Delete Account
                                 </button>
                             </form>
-                            <form method="POST" action="{{ route('logout') }}" class="inline-block" id="logoutForm">
+                            <form method="POST" action="{{ route('logout') }}" class="inline-block w-full md:w-auto" id="logoutForm">
                                 @csrf
-                                <button onclick="confirmLogout()" type="button" class="py-2 px-4 bg-neutral-700 text-white font-semibold rounded-lg">
+                                <button onclick="confirmLogout()" type="button" class="w-full md:w-auto py-2 px-4 bg-neutral-700 text-white font-semibold rounded-lg">
                                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                                 </button>   
                             </form>
-                            <a href="{{ route('profile.edit') }}" class="inline-block py-2 px-4 bg-spink text-white font-semibold rounded-lg">
+                            <a href="{{ route('profile.edit') }}" class="text-center inline-block w-full md:w-auto py-2 px-4 bg-spink text-white font-semibold rounded-lg">
                                 <i class="fas fa-user-edit mr-2"></i>Edit Profile
                             </a>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

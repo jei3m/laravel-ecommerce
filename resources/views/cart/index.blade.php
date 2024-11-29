@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-header />
 
-    <div class="container mx-auto pt-10 p-2 lg:p-0">
-        <div class="bg-neutral-800 rounded-[30px] p-8">
+    <div class="container mx-auto pt-10 p-2 lg:p-0 mb-10">
+        <div class="bg-neutral-800 rounded-[30px] p-2 md:p-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Cart Items Section -->
                 <div class="lg:w-2/3">
@@ -15,7 +15,7 @@
                                 <!-- Cart Items -->
                                 <div class="space-y-4">
                                     @foreach($cartItems as $item)
-                                        <div class="flex items-center justify-between p-4 border-b border-neutral-700 last:border-b-0">
+                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-neutral-700 last:border-b-0 gap-4">
                                             <div class="flex items-center gap-4">
                                                 @if(str_starts_with($item->product->image, 'http'))
                                                     <img src="{{ $item->product->getImageUrl() }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg">
@@ -28,20 +28,22 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="flex items-center gap-4">
-                                                <div class="flex items-center bg-neutral-800 rounded-lg">
-                                                    <button onclick="updateQuantity({{ $item->id }}, 'decrease')" class="px-3 py-1 text-white hover:text-spink transition-colors">
-                                                        <i class="fas fa-minus"></i>
-                                                    </button>
-                                                    <span class="px-3 text-white">{{ $item->quantity }}</span>
-                                                    <button onclick="updateQuantity({{ $item->id }}, 'increase')" class="px-3 py-1 text-white hover:text-spink transition-colors">
-                                                        <i class="fas fa-plus"></i>
+                                            <div class="flex items-center justify-between sm:justify-end gap-4 pl-20 sm:pl-0">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="flex items-center bg-neutral-800 rounded-lg">
+                                                        <button onclick="updateQuantity({{ $item->id }}, 'decrease')" class="px-3 py-1.5 text-white hover:text-spink transition-colors">
+                                                            <i class="fas fa-minus text-sm"></i>
+                                                        </button>
+                                                        <span class="px-3 text-white min-w-[2rem] text-center">{{ $item->quantity }}</span>
+                                                        <button onclick="updateQuantity({{ $item->id }}, 'increase')" class="px-3 py-1.5 text-white hover:text-spink transition-colors">
+                                                            <i class="fas fa-plus text-sm"></i>
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <button onclick="removeFromCart({{ $item->id }})" class="text-red-500 hover:text-red-600 transition-colors p-1.5">
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
-                                                
-                                                <button onclick="removeFromCart({{ $item->id }})" class="text-red-500 hover:text-red-600 transition-colors">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
                                             </div>
                                         </div>
                                     @endforeach

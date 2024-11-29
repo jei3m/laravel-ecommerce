@@ -29,7 +29,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main cla>
                 @isset($slot)
                     {{ $slot }}
                 @endisset

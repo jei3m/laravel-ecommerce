@@ -18,6 +18,17 @@
             <div class="hidden md:flex items-center space-x-4 lg:space-x-8">
                 <a href="{{ route('products.index') }}" class="block py-2 text-sm lg:text-base text-spink font-semibold transition-colors">Home</a>
                 <a href="{{ route('products.browse') }}" class="block py-2 text-sm lg:text-base text-spink font-semibold transition-colors">Browse</a>
+                <a href="{{ route('cart.index') }}" class="block py-2 text-sm lg:text-base text-spink font-semibold transition-colors relative">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    @php
+                        $cartCount = auth()->check() ? auth()->user()->cartItems()->count() : 0;
+                    @endphp
+                    @if($cartCount > 0)
+                        <span class="absolute top-1 -right-3 bg-spink text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+                </a>
                 <a href="{{ route('profile') }}" class="block py-2 px-4 text-sm lg:text-base text-white font-semibold bg-neutral-800 rounded-full flex items-center gap-2">
                     <span>Profile</span>
                     <div class="w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-neutral-900 flex items-center justify-center">
@@ -41,6 +52,17 @@
                     <div class="p-2 space-y-1">
                         <a href="{{ route('products.index') }}" class="block px-4 py-2 text-white hover:bg-neutral-700 rounded-lg transition-colors">Home</a>
                         <a href="{{ route('products.browse') }}" class="block px-4 py-2 text-white hover:bg-neutral-700 rounded-lg transition-colors">Browse</a>
+                        <a href="{{ route('cart.index') }}" class="block px-4 py-2 text-white hover:bg-neutral-700 rounded-lg transition-colors flex items-center justify-between">
+                            <span>Cart</span>
+                            @php
+                                $cartCount = auth()->check() ? auth()->user()->cartItems()->count() : 0;
+                            @endphp
+                            @if($cartCount > 0)
+                                <span class="bg-spink text-white text-xs px-2 py-1 rounded-full">
+                                    {{ $cartCount }}
+                                </span>
+                            @endif
+                        </a>
                         <a href="{{ route('profile') }}" class="block px-4 py-2 text-white hover:bg-neutral-700 rounded-lg transition-colors">Profile</a>
                         
                         <!-- Mobile Search -->

@@ -25,7 +25,7 @@
 
     </head>
     <body class="font-sans antialiased bg-neutral-900">
-        <div>
+        <div class="max-w-[1200px] mx-auto">
             <!-- Page Content -->
             <main>
                 @isset($slot)
