@@ -47,7 +47,7 @@
                                 <h1 class="text-4xl font-bold text-white">{{ $product->name }}</h1>
                                 <div class="flex items-center bg-neutral-700 px-4 py-2 rounded-full">
                                     <i class="fas fa-star text-yellow-400 mr-2"></i>
-                                    <span class="text-white font-semibold">{{ number_format($product->rating, 1) }}</span>
+                                    <span class="text-white mr-1">{{ number_format($product->average_rating, 1) }}</span>
                                 </div>
                             </div>
 
