@@ -29,31 +29,35 @@ class CartController extends Controller
     // Add a product to the cart or increment its quantity if already exists
     public function addToCart(Request $request, Product $product)
     {
+        $quantity = $request->input('quantity', 1);
+        
         $cartItem = CartItem::where('user_id', auth()->id())
             ->where('product_id', $product->id)
             ->first();
 
         if ($cartItem) {
             // Check if increasing quantity would exceed stock
-            if ($cartItem->quantity >= $product->stock) {
+            $newQuantity = $cartItem->quantity + $quantity;
+            if ($newQuantity > $product->stock) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Cannot add more items. Stock limit reached.'
                 ]);
             }
-            $cartItem->increment('quantity');
+            $cartItem->quantity = $newQuantity;
+            $cartItem->save();
         } else {
             // Check if product has stock available
-            if ($product->stock < 1) {
+            if ($product->stock < $quantity) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Product is out of stock.'
+                    'message' => 'Requested quantity exceeds available stock.'
                 ]);
             }
             CartItem::create([
                 'user_id' => auth()->id(),
                 'product_id' => $product->id,
-                'quantity' => 1
+                'quantity' => $quantity
             ]);
         }
 

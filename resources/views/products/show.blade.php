@@ -3,8 +3,13 @@
 @section('content')
 <div class="min-h-screen flex flex-col">
     <x-header/>
-    <div class="flex-1 flex items-center justify-center p-4">
+    <div class="flex-1 flex items-center justify-center mt-0 md:mt-[-6rem]">
         <div class="container max-w-6xl mx-auto">
+            <div class="flex justify-end mb-4">
+                <a href="{{ url()->previous() }}" class="bg-red-500 text-white p-3 px-5 rounded-full transition-all">
+                    <i class="fas fa-times text-xl"></i>
+                </a>
+            </div>
             @if(session('success'))
                 @push('scripts')
                 <script>
@@ -87,8 +92,22 @@
 
                         <!-- Action Buttons -->
                         <div class="flex gap-4">
-                            <form action="{{ route('cart.add', $product) }}" method="POST" class="w-full" id="addToCartForm">
+                            <form action="{{ route('cart.add', $product) }}" method="POST" class="w-full" id="addToCartForm" onsubmit="return false;">
                                 @csrf
+                                <div class="flex gap-4 mb-4">
+                                    <div class="flex items-center bg-neutral-700 rounded-2xl px-4">
+                                        <button type="button" onclick="decrementQuantity()" class="text-white py-2">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock }}"
+                                            class="w-16 text-center bg-transparent text-white focus:ring-0 border-none"
+                                            onchange="validateQuantity(this)"
+                                            onkeypress="return event.keyCode != 13;">
+                                        <button type="button" onclick="incrementQuantity()" class="text-white py-2">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 <button type="button" onclick="addToCart()" class="w-full bg-spink text-white font-bold py-4 px-6 rounded-full hover:bg-opacity-90 transition-colors">
                                     <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
                                 </button>
@@ -154,6 +173,41 @@
 </script>
 
 <script>
+    // Prevent form submission on Enter key
+    document.getElementById('addToCartForm').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    function validateQuantity(input) {
+        const max = {{ $product->stock }};
+        if (input.value > max) {
+            input.value = max;
+        }
+        if (input.value < 1) {
+            input.value = 1;
+        }
+    }
+
+    function incrementQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        const max = {{ $product->stock }};
+        if (currentValue < max) {
+            input.value = currentValue + 1;
+        }
+    }
+
+    function decrementQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+        }
+    }
+
     function addToCart() {
         const form = document.getElementById('addToCartForm');
         const formData = new FormData(form);
@@ -171,7 +225,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Added to Cart!',
-                text: "{{ $product->name }} has been added to your cart",
+                text: `${formData.get('quantity')}x {{ $product->name }} has been added to your cart`,
                 position: 'center',
                 showConfirmButton: true,
                 timerProgressBar: true,

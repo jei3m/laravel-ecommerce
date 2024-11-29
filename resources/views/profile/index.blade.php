@@ -63,7 +63,8 @@
                                         id="street_address" 
                                         name="street_address" 
                                         value="{{ $user->street_address }}"
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                        required
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
                                     >
                                 </div>
                                 <div>
@@ -73,7 +74,8 @@
                                         id="barangay" 
                                         name="barangay" 
                                         value="{{ $user->barangay }}"
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                        required
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
                                     >
                                 </div>
                                 <div>
@@ -83,7 +85,8 @@
                                         id="city" 
                                         name="city" 
                                         value="{{ $user->city }}"
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                        required
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
                                     >
                                 </div>
                                 <div>
@@ -93,7 +96,8 @@
                                         id="province" 
                                         name="province" 
                                         value="{{ $user->province }}"
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-spink transition-colors"
+                                        required
+                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
                                     >
                                 </div>
                             </div>
@@ -218,6 +222,11 @@
 
             function saveAddress() {
                 const form = document.getElementById('address-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
                 const formData = new FormData(form);
 
                 // Show loading state
