@@ -18,10 +18,10 @@
                     <div class="space-y-2 flex flex-col">
                         @if(auth()->user()->isAdmin())
                         <a href="{{ route('products.dashboard') }}" class="bg-spink text-white font-bold py-2 px-4 rounded-xl">
-                            <i class="fas fa-box mr-2"></i>Products
+                            Products
                         </a>
-                        <a href="{{ route('orders.dashboard') }}" class="bg-spink text-white font-bold py-2 px-4 rounded-xl">
-                            <i class="fas fa-shopping-bag mr-2"></i>Orders
+                        <a href="{{ route('orders.dashboard') }}" class="bg-spink text-white text-center font-bold py-2 px-4 rounded-xl">
+                            Orders
                         </a>
                         @endif
                     </div>

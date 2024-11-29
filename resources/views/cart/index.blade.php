@@ -77,7 +77,7 @@
                             <!-- Shipping Address -->
                             <div class="mb-6">
                                 <h3 class="text-lg text-white mb-3">Shipping Address</h3>
-                                @if(auth()->user()->street_address)
+                                @if(auth()->user()->street_address && auth()->user()->barangay && auth()->user()->city && auth()->user()->province)
                                     <div class="bg-neutral-800 rounded-xl p-4 text-gray-300 space-y-2">
                                         <div class="grid grid-cols-3 gap-1">
                                             <span class="text-gray-400">Street Address:</span>
@@ -157,10 +157,10 @@
                                 </div>
 
                                 <button type="submit" 
-                                    @if(!auth()->user()->street_address) disabled @endif
+                                    @if(!auth()->user()->street_address || !auth()->user()->barangay || !auth()->user()->city || !auth()->user()->province) disabled @endif
                                     class="w-full bg-spink hover:bg-spink/80 text-white font-medium py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6">
-                                    @if(!auth()->user()->street_address)
-                                        Please Add Shipping Address
+                                    @if(!auth()->user()->street_address || !auth()->user()->barangay || !auth()->user()->city || !auth()->user()->province)
+                                        Please Complete Shipping Address
                                     @else
                                         Place Order
                                     @endif
