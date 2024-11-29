@@ -9,9 +9,9 @@
                         @if(isset($query))
                             Search Results for "<span class="text-spink">{{ $query }}</span>"
                         @elseif($selectedCategory)
-                            <span class="text-spink">{{ $selectedCategory }}</span> Products
+                            <span class="text-spink underline decoration-white decoration-2">{{ $selectedCategory }}</span> <span class="text-white">Products</span>
                         @else
-                            <span class="underline decoration-white decoration-2">All</span> <span class="text-spink">Products</span>
+                            <span class="text-spink underline decoration-white decoration-2">All</span> <span class="text-white">Products</span>
                         @endif
                     </h1>
                 </div>

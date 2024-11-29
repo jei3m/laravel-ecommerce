@@ -6,7 +6,7 @@
         
         <div class="bg-neutral-900 rounded-[20px] p-7">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-white"><span class="underline decoration-white decoration-2">Most Popular</span> <span class="text-spink">Right Now</span></h1>
+                <h1 class="text-3xl font-bold text-spink"><span class="underline decoration-white decoration-2">Most Popular</span> <span class="text-white">Right Now</span></h1>
             </div>
 
             @if(session('success'))

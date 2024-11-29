@@ -120,6 +120,7 @@ class ProductController extends Controller
         return view('products.dashboard', compact('products'));
     }
 
+    // Seperate search function only for product dashboard
     public function dashboardSearch(Request $request)
     {
         $query = $request->input('query');
