@@ -120,6 +120,24 @@ class ProductController extends Controller
         return view('products.dashboard', compact('products'));
     }
 
+    public function dashboardSearch(Request $request)
+    {
+        $query = $request->input('query');
+        
+        $products = Product::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('category', 'LIKE', "%{$query}%")
+                  ->orWhere('price', 'LIKE', "%{$query}%")
+                  ->orWhere('description', 'LIKE', "%{$query}%")
+                  ->orWhere('stock', 'LIKE', "%{$query}%");
+            })
+            ->latest()
+            ->paginate(10);
+
+        return view('products.dashboard', compact('products'));
+    }
+
     public function create()
     {
         return view('products.create');
@@ -164,6 +182,7 @@ class ProductController extends Controller
         return view('products.edit', compact('product'));
     }
 
+    // To edit products
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
@@ -191,6 +210,7 @@ class ProductController extends Controller
             ->with('success', 'Product updated successfully!');
     }
 
+    // Delete product
     public function destroy(Product $product)
     {
         if ($product->image && $product->image !== 'products/placeholder.png') {
@@ -200,7 +220,7 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()
-            ->route('products.index')
+            ->route('products.dashboard')
             ->with('success', 'Product deleted successfully!');
     }
 }

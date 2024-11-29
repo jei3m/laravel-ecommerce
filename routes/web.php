@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [ProductController::class, 'dashboard'])->name('dashboard');
         Route::get('/products/dashboard', [ProductController::class, 'dashboard'])->name('products.dashboard');
         Route::get('/orders/dashboard', [OrderController::class, 'dashboard'])->name('orders.dashboard');
+        Route::get('/products/dashboard/search', [ProductController::class, 'dashboardSearch'])->name('products.dashboard.search');
         Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])
             ->name('orders.update-status');
         Route::post('/orders/{order}/update-payment-status', [OrderController::class, 'updatePaymentStatus'])
@@ -39,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 
     // Order Routes
+    Route::get('/orders/search', [OrderController::class, 'search'])->name('orders.search');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}/success', [OrderController::class, 'success'])->name('orders.success');
     Route::get('/orders/cancel/{order}', [OrderController::class, 'cancelOrder'])->name('orders.cancel');

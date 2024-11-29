@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    // Display cart contents and calculate totals
     public function index()
     {
         $cartItems = CartItem::where('user_id', auth()->id())
@@ -25,6 +26,7 @@ class CartController extends Controller
         return view('cart.index', compact('cartItems', 'subtotal', 'shipping', 'tax', 'total'));
     }
 
+    // Add a product to the cart or increment its quantity if already exists
     public function addToCart(Request $request, Product $product)
     {
         $cartItem = CartItem::where('user_id', auth()->id())
@@ -47,6 +49,7 @@ class CartController extends Controller
         ]);
     }
 
+    // Update the quantity of a cart item (increase/decrease)
     public function updateQuantity(Request $request)
     {
         $cartItem = CartItem::where('user_id', auth()->id())
@@ -65,6 +68,7 @@ class CartController extends Controller
         return response()->json(['success' => false]);
     }
 
+    // Remove a specific item from the cart
     public function destroy($id)
     {
         $cartItem = CartItem::where('user_id', auth()->id())

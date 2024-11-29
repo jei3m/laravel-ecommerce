@@ -107,6 +107,7 @@ class OrderController extends Controller
                 }
             }
 
+            // Changes to order_status applies to payment_status
             $statusMap = [
                 'cod' => [
                     'completed' => 'completed',
@@ -177,5 +178,28 @@ class OrderController extends Controller
 
         return view('orders.dashboard', compact('orders'));
     }
-    
+
+    // Search orders by multiple fields
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        
+        $orders = Order::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('id', 'LIKE', "%{$query}%")
+                  ->orWhereHas('user', function ($userQuery) use ($query) {
+                      $userQuery->where('name', 'LIKE', "%{$query}%");
+                  })
+                  ->orWhere('total_amount', 'LIKE', "%{$query}%")
+                  ->orWhere('payment_method', 'LIKE', "%{$query}%")
+                  ->orWhere('payment_status', 'LIKE', "%{$query}%")
+                  ->orWhere('order_status', 'LIKE', "%{$query}%")
+                  ->orWhere('created_at', 'LIKE', "%{$query}%");
+            })
+            ->with(['user', 'items.product'])
+            ->latest()
+            ->paginate(10);
+
+        return view('orders.dashboard', compact('orders'));
+    }
 }

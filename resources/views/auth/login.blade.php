@@ -44,18 +44,18 @@
 
                 <div class="flex flex-col space-y-3">
                     <!-- Login Button -->
-                    <button type="submit" class="w-full py-2 px-4 bg-spink text-white font-semibold rounded-xl hover:bg-pink-600 transition-colors">
+                    <button type="submit" class="w-full py-2 px-4 bg-spink text-white font-semibold rounded-xl">
                         Login
                     </button>
 
                     <!-- Register Button -->
-                    <a href="{{ route('register') }}" class="w-full py-2 px-4 bg-neutral-700 text-white font-semibold rounded-xl hover:bg-neutral-600 text-center transition-colors">
+                    <a href="{{ route('register') }}" class="w-full py-2 px-4 bg-neutral-700 text-white font-semibold rounded-xl text-center">
                         Register
                     </a>
 
                     <!-- Forgot Password -->
                     @if (Route::has('password.request'))
-                        <a class="text-sm text-gray-400 hover:text-spink text-center transition-colors" href="{{ route('password.request') }}">
+                        <a class="text-sm text-gray-400 text-center" href="{{ route('password.request') }}">
                             Forgot your password?
                         </a>
                     @endif

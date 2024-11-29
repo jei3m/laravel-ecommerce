@@ -42,7 +42,7 @@
                             <label for="price" class="block text-sm font-medium text-gray-400 mb-1">Price</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-3 text-gray-400">$</span>
-                                <input type="number" id="price" name="price" value="{{ $product->price }}" step="10"
+                                <input type="number" id="price" name="price" value="{{ $product->price }}" step="any"
                                     class="w-full bg-neutral-900 border border-neutral-700 text-white rounded-xl p-3 pl-7 focus:outline-none focus:border-spink">
                             </div>
                         </div>

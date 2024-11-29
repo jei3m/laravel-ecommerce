@@ -16,6 +16,12 @@
                             <h1 class="text-2xl font-bold text-white">Orders Dashboard</h1>
                             <p class="text-gray-400">Manage customer orders and order status</p>
                         </div>
+                        <div class="relative hidden md:block max-w-xs">
+                            <form action="{{ route('orders.search') }}" method="GET" class="relative flex items-center px-2 py-1 rounded-full">
+                                <i class="fas fa-search absolute left-5 text-gray-400"></i>
+                                <input type="text" name="query" placeholder="Search orders..." class="w-full py-2 pl-9 pr-4 bg-transparent text-white rounded-full focus:outline-none" value="{{ request('query') }}">
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Orders Table -->

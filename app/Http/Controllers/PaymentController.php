@@ -8,6 +8,7 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PaymentController extends Controller
 {
+    // Initialize PayPal payment process and create payment order
     public function processPayPal(Order $order)
     {
         $provider = new PayPalClient;
@@ -57,6 +58,7 @@ class PaymentController extends Controller
         return redirect()->back()->with('error', 'Something went wrong with PayPal');
     }
 
+    // Redirect user to PayPal payment page using stored payment link
     public function redirectToPayPal(Order $order)
     {
         $paypalLink = session('paypal_link');
@@ -71,6 +73,7 @@ class PaymentController extends Controller
         return redirect()->away($paypalLink);
     }
 
+    // Handle successful PayPal payment and update order status
     public function success(Request $request, Order $order)
     {
         $provider = new PayPalClient;
@@ -98,6 +101,7 @@ class PaymentController extends Controller
             ->with('error', 'Something went wrong with PayPal payment');
     }
 
+    // Handle cancelled PayPal payment and update order status
     public function cancel(Order $order)
     {
         $order->update([

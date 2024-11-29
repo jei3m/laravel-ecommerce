@@ -17,6 +17,12 @@
                             <h1 class="text-2xl font-bold text-white">Product Dashboard</h1>
                             <p class="text-gray-400">Manage your products inventory</p>
                         </div>
+                        <div class="relative hidden md:block max-w-xs">
+                            <form action="{{ route('products.dashboard.search') }}" method="GET" class="relative flex items-center px-2 py-1 rounded-full">
+                                <i class="fas fa-search absolute left-5 text-gray-400"></i>
+                                <input type="text" name="query" placeholder="Search products..." class="w-full py-2 pl-9 pr-4 bg-transparent text-white rounded-full focus:outline-none" value="{{ request('query') }}">
+                            </form>
+                        </div>
                         <a href="{{ route('products.create') }}" class="bg-spink text-white px-6 py-3 rounded-full inline-flex items-center">
                             <i class="fas fa-plus-circle mr-2"></i>Add New Product
                         </a>
@@ -117,6 +123,25 @@
                 }
             })
         }
+
+        @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: "{{ session('success') }}",
+            position: 'center',
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            background: '#171717',
+            color: '#fff',
+            customClass: {
+                popup: 'rounded-[20px] border border-neutral-700',
+            }
+        });
+        @endif
+        
     </script>
     @endpush
+
 </x-app-layout>
