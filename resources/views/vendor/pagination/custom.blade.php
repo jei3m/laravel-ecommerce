@@ -6,13 +6,13 @@
                     {!! __('pagination.previous') !!}
                 </span>
             @else
-                <a href="{{ $paginator->previousPageUrl() }}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-xl hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-spink">
+                <a href="{{ $paginator->previousPageUrl() }}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-xl hover:bg-neutral-700 focus:outline-none">
                     {!! __('pagination.previous') !!}
                 </a>
             @endif
 
             @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->nextPageUrl() }}" class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-xl hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-spink">
+                <a href="{{ $paginator->nextPageUrl() }}" class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-xl hover:bg-neutral-700 focus:outline-none">
                     {!! __('pagination.next') !!}
                 </a>
             @else
@@ -67,7 +67,7 @@
                                         <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-white bg-spink border border-neutral-700 cursor-default">{{ $page }}</span>
                                     </span>
                                 @else
-                                    <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-400 bg-neutral-800 border border-neutral-700 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-spink" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">
+                                    <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-400 bg-neutral-800 border border-neutral-700 hover:bg-neutral-700 focus:outline-none" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">
                                         {{ $page }}
                                     </a>
                                 @endif

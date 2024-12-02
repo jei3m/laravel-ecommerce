@@ -55,7 +55,7 @@
                                         <span class="text-white">{{ strtoupper($order->payment_method) }}</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="inline-flex items-center px-3 py-1 rounded-lg
+                                        <span class="inline-flex items-center px-3 py-1 rounded-lg justify-center min-w-[100px]
                                             @if($order->payment_status === 'pending') bg-yellow-500/20 text-yellow-500
                                             @elseif($order->payment_status === 'completed') bg-green-500/20 text-green-500
                                             @elseif($order->payment_status === 'cancelled') bg-red-500/20 text-red-500
@@ -87,7 +87,7 @@
 
                     <!-- Pagination -->
                     <div class="mt-6">
-                        {{ $orders->links() }}
+                        {{ $orders->links('pagination::custom') }}
                     </div>
                 </div>
             </div>
