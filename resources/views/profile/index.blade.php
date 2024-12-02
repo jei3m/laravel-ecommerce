@@ -180,8 +180,6 @@
         </style>
     @endpush
     @push('scripts')
-        <!-- Include jQuery if not already included -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
         <!-- Philippine Address Selector Script -->
         <script>
