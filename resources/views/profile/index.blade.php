@@ -473,11 +473,11 @@
                             icon: 'success',
                             title: 'Success',
                             text: data.message,
-                            iconColor: '#ec4899',
+                            iconColor: '#22c55e',
                             background: '#171717',
                             color: '#fff',
                             confirmButtonText: 'OK',
-                            confirmButtonColor: '#ec4899'
+                            confirmButtonColor: '#Ff91a4'
                         }).then(() => {
                             window.location.reload();
                         });
