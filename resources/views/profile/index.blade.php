@@ -668,7 +668,7 @@
                                 background: '#171717',
                                 color: '#fff',
                                 confirmButtonText: 'Continue Shopping',
-                                confirmButtonColor: '#ec4899',
+                                confirmButtonColor: '#Ff91a4',
                                 customClass: {
                                     popup: 'rounded-[20px] border border-neutral-800',
                                     confirmButton: 'rounded-xl'
@@ -687,7 +687,7 @@
                                 background: '#171717',
                                 color: '#fff',
                                 confirmButtonText: 'Try Again',
-                                confirmButtonColor: '#ec4899',
+                                confirmButtonColor: '#Ff91a4',
                                 customClass: {
                                     popup: 'rounded-[20px] border border-neutral-800',
                                     confirmButton: 'rounded-xl'
