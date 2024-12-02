@@ -79,22 +79,32 @@
                                 <h3 class="text-lg text-white mb-3">Shipping Address</h3>
                                 @if(auth()->user()->street_address && auth()->user()->barangay && auth()->user()->city && auth()->user()->province)
                                     <div class="bg-neutral-800 rounded-xl p-4 text-gray-300 space-y-2">
+
                                         <div class="grid grid-cols-3 gap-1">
-                                            <span class="text-gray-400">Street Address:</span>
-                                            <span class="col-span-2">{{ auth()->user()->street_address }}</span>
+                                            <span class="text-gray-400">Region:</span>
+                                            <span class="col-span-2">{{ auth()->user()->region }}</span>
                                         </div>
-                                        <div class="grid grid-cols-3 gap-1">
-                                            <span class="text-gray-400">Barangay:</span>
-                                            <span class="col-span-2">{{ auth()->user()->barangay }}</span>
-                                        </div>
-                                        <div class="grid grid-cols-3 gap-1">
-                                            <span class="text-gray-400">City:</span>
-                                            <span class="col-span-2">{{ auth()->user()->city }}</span>
-                                        </div>
+
                                         <div class="grid grid-cols-3 gap-1">
                                             <span class="text-gray-400">Province:</span>
                                             <span class="col-span-2">{{ auth()->user()->province }}</span>
                                         </div>
+
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <span class="text-gray-400">City:</span>
+                                            <span class="col-span-2">{{ auth()->user()->city }}</span>
+                                        </div>
+
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <span class="text-gray-400">Barangay:</span>
+                                            <span class="col-span-2">{{ auth()->user()->barangay }}</span>
+                                        </div>
+
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <span class="text-gray-400">Street Address:</span>
+                                            <span class="col-span-2">{{ auth()->user()->street_address }}</span>
+                                        </div>
+                                     
                                         <div class="pt-2">
                                             <a href="/profile" class="text-spink hover:text-spink/80 transition-colors text-sm">
                                                 Edit address →

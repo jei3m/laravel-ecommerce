@@ -56,56 +56,65 @@
                             @csrf
                             @method('PUT')
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                
+                                <!-- Region Dropdown -->
                                 <div>
-                                    <label for="street_address" class="block text-sm font-medium text-gray-400">House/Unit & Street</label>
+                                    <label for="region" class="block text-sm font-medium text-gray-400 mb-1">Region</label>
+                                    <select id="region" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 text-white rounded-xl focus:outline-none focus:border-spink transition-colors appearance-none cursor-pointer" required>
+                                        <option value="" disabled selected>Choose Region</option>
+                                    </select>
+                                    <input type="hidden" id="region-text" name="region" value="{{ $user->region }}" required>
+                                </div>
+
+                                <!-- Province Dropdown -->
+                                <div>
+                                    <label for="province" class="block text-sm font-medium text-gray-400 mb-1">Province</label>
+                                    <select id="province" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 text-white rounded-xl focus:outline-none focus:border-spink transition-colors appearance-none cursor-pointer" required>
+                                        <option value="" disabled selected>Choose Province</option>
+                                    </select>
+                                    <input type="hidden" id="province-text" name="province" value="{{ $user->province }}" required>
+                                </div>
+
+                                <!-- City Dropdown -->
+                                <div>
+                                    <label for="city" class="block text-sm font-medium text-gray-400 mb-1">City/Municipality</label>
+                                    <select id="city" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 text-white rounded-xl focus:outline-none focus:border-spink transition-colors appearance-none cursor-pointer" required>
+                                        <option value="" disabled selected>Choose City</option>
+                                    </select>
+                                    <input type="hidden" id="city-text" name="city" value="{{ $user->city }}" required>
+                                </div>
+
+                                <!-- Barangay Dropdown -->
+                                <div>
+                                    <label for="barangay" class="block text-sm font-medium text-gray-400 mb-1">Barangay</label>
+                                    <select id="barangay" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 text-white rounded-xl focus:outline-none focus:border-spink transition-colors appearance-none cursor-pointer" required>
+                                        <option value="" disabled selected>Choose Barangay</option>
+                                    </select>
+                                    <input type="hidden" id="barangay-text" name="barangay" value="{{ $user->barangay }}" required>
+                                </div>
+
+                                <div class="w-full">
+                                    <label for="street_address" class="block text-sm font-medium text-gray-400 mb-1">House/Unit & Street</label>
                                     <input 
                                         type="text" 
                                         id="street_address" 
                                         name="street_address" 
                                         value="{{ $user->street_address }}"
                                         required
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
+                                        class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 text-white rounded-xl focus:outline-none focus:border-spink transition-colors placeholder-gray-500"
+                                        placeholder="Enter street address"
                                     >
                                 </div>
-                                <div>
-                                    <label for="barangay" class="block text-sm font-medium text-gray-400">Barangay</label>
-                                    <input 
-                                        type="text" 
-                                        id="barangay" 
-                                        name="barangay" 
-                                        value="{{ $user->barangay }}"
-                                        required
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
-                                    >
+
+                                <div class="flex justify-center md:justify-end py-2.5 mt-4">
+                                    <button type="button" onclick="saveAddress()" class="bg-spink text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-spink/80 transition-colors flex items-center space-x-2">
+                                        <i class="fas fa-save"></i>
+                                        <span>Update Address</span>
+                                    </button>
                                 </div>
-                                <div>
-                                    <label for="city" class="block text-sm font-medium text-gray-400">City</label>
-                                    <input 
-                                        type="text" 
-                                        id="city" 
-                                        name="city" 
-                                        value="{{ $user->city }}"
-                                        required
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
-                                    >
-                                </div>
-                                <div>
-                                    <label for="province" class="block text-sm font-medium text-gray-400">Province</label>
-                                    <input 
-                                        type="text" 
-                                        id="province" 
-                                        name="province" 
-                                        value="{{ $user->province }}"
-                                        required
-                                        class="mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors"
-                                    >
-                                </div>
+
                             </div>
-                            <div class="flex justify-end mt-4">
-                                <button type="button" onclick="saveAddress()" class="bg-spink text-white font-bold py-2 px-4 rounded-xl">
-                                    <i class="fas fa-save mr-2"></i>Update Address
-                                </button>
-                            </div>
+                          
                         </form>
                     </div>
 
@@ -163,8 +172,341 @@
             </div>
         </div>
     </div>
+    @push('styles')
+        <style>
+            select.address-dropdown {
+                @apply mt-1 w-full px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none transition-colors;
+            }
+        </style>
+    @endpush
     @push('scripts')
+        <!-- Include jQuery if not already included -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+        <!-- Philippine Address Selector Script -->
         <script>
+            var my_handlers = {
+                fill_provinces: function() {
+                    var region_code = $(this).val();
+                    var region_text = $(this).find("option:selected").text();
+                    $('#region-text').val(region_text);
+                    
+                    let dropdown = $('#province');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" disabled>Choose State/Province</option>');
+                    dropdown.prop('selectedIndex', 0);
+
+                    $.getJSON('ph-json/province.json', function(data) {
+                        var provinces = data.filter(province => province.region_code === region_code);
+                        provinces.sort((a, b) => a.province_name.localeCompare(b.province_name));
+
+                        $.each(provinces, function(key, entry) {
+                            dropdown.append($('<option></option>')
+                                .attr('value', entry.province_code)
+                                .text(entry.province_name));
+                        });
+
+                        // Set selected province if exists
+                        var savedProvince = $('#province-text').val();
+                        if (savedProvince) {
+                            dropdown.find('option').each(function() {
+                                if ($(this).text() === savedProvince) {
+                                    dropdown.val($(this).val()).trigger('change');
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                },
+
+                fill_cities: function() {
+                    var province_code = $(this).val();
+                    var province_text = $(this).find("option:selected").text();
+                    $('#province-text').val(province_text);
+                    
+                    let dropdown = $('#city');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" disabled>Choose City/Municipality</option>');
+                    dropdown.prop('selectedIndex', 0);
+
+                    $.getJSON('ph-json/city.json', function(data) {
+                        var cities = data.filter(city => city.province_code === province_code);
+                        cities.sort((a, b) => a.city_name.localeCompare(b.city_name));
+
+                        $.each(cities, function(key, entry) {
+                            dropdown.append($('<option></option>')
+                                .attr('value', entry.city_code)
+                                .text(entry.city_name));
+                        });
+
+                        // Set selected city if exists
+                        var savedCity = $('#city-text').val();
+                        if (savedCity) {
+                            dropdown.find('option').each(function() {
+                                if ($(this).text() === savedCity) {
+                                    dropdown.val($(this).val()).trigger('change');
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                },
+
+                fill_barangays: function() {
+                    var city_code = $(this).val();
+                    var city_text = $(this).find("option:selected").text();
+                    $('#city-text').val(city_text);
+                    
+                    let dropdown = $('#barangay');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" disabled>Choose Barangay</option>');
+                    dropdown.prop('selectedIndex', 0);
+
+                    $.getJSON('ph-json/barangay.json', function(data) {
+                        var barangays = data.filter(barangay => barangay.city_code === city_code);
+                        barangays.sort((a, b) => a.brgy_name.localeCompare(b.brgy_name));
+
+                        $.each(barangays, function(key, entry) {
+                            dropdown.append($('<option></option>')
+                                .attr('value', entry.brgy_code)
+                                .text(entry.brgy_name));
+                        });
+
+                        // Set selected barangay if exists
+                        var savedBarangay = $('#barangay-text').val();
+                        if (savedBarangay) {
+                            dropdown.find('option').each(function() {
+                                if ($(this).text() === savedBarangay) {
+                                    dropdown.val($(this).val()).trigger('change');
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                },
+
+                onchange_barangay: function() {
+                    var barangay_text = $(this).find("option:selected").text();
+                    $('#barangay-text').val(barangay_text);
+                }
+            };
+
+            $(function() {
+                // Event handlers for dropdowns
+                $('#region').on('change', my_handlers.fill_provinces);
+                $('#province').on('change', my_handlers.fill_cities);
+                $('#city').on('change', my_handlers.fill_barangays);
+                $('#barangay').on('change', my_handlers.onchange_barangay);
+
+                // Initialize region dropdown
+                let regionDropdown = $('#region');
+                regionDropdown.empty();
+                regionDropdown.append('<option selected="true" disabled>Choose Region</option>');
+                regionDropdown.prop('selectedIndex', 0);
+
+                // Load regions and set the selected region
+                $.getJSON('ph-json/region.json', function(data) {
+                    data.sort((a, b) => a.region_name.localeCompare(b.region_name));
+                    
+                    $.each(data, function(key, entry) {
+                        regionDropdown.append($('<option></option>')
+                            .attr('value', entry.region_code)
+                            .text(entry.region_name));
+                    });
+
+                    // Set selected region if exists
+                    var savedRegion = $('#region-text').val();
+                    if (savedRegion) {
+                        regionDropdown.find('option').each(function() {
+                            if ($(this).text() === savedRegion) {
+                                regionDropdown.val($(this).val()).trigger('change');
+                                return false;
+                            }
+                        });
+                    }
+                });
+
+                // Load provinces when region is selected
+                my_handlers.fill_provinces = function() {
+                    var region_code = $(this).val();
+                    var region_text = $(this).find("option:selected").text();
+                    $('#region-text').val(region_text);
+                    
+                    let dropdown = $('#province');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" disabled>Choose State/Province</option>');
+                    dropdown.prop('selectedIndex', 0);
+
+                    $.getJSON('ph-json/province.json', function(data) {
+                        var provinces = data.filter(province => province.region_code === region_code);
+                        provinces.sort((a, b) => a.province_name.localeCompare(b.province_name));
+
+                        $.each(provinces, function(key, entry) {
+                            dropdown.append($('<option></option>')
+                                .attr('value', entry.province_code)
+                                .text(entry.province_name));
+                        });
+
+                        // Set selected province if exists
+                        var savedProvince = $('#province-text').val();
+                        if (savedProvince) {
+                            dropdown.find('option').each(function() {
+                                if ($(this).text() === savedProvince) {
+                                    dropdown.val($(this).val()).trigger('change');
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                // Load cities when province is selected
+                my_handlers.fill_cities = function() {
+                    var province_code = $(this).val();
+                    var province_text = $(this).find("option:selected").text();
+                    $('#province-text').val(province_text);
+                    
+                    let dropdown = $('#city');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" disabled>Choose City/Municipality</option>');
+                    dropdown.prop('selectedIndex', 0);
+
+                    $.getJSON('ph-json/city.json', function(data) {
+                        var cities = data.filter(city => city.province_code === province_code);
+                        cities.sort((a, b) => a.city_name.localeCompare(b.city_name));
+
+                        $.each(cities, function(key, entry) {
+                            dropdown.append($('<option></option>')
+                                .attr('value', entry.city_code)
+                                .text(entry.city_name));
+                        });
+
+                        // Set selected city if exists
+                        var savedCity = $('#city-text').val();
+                        if (savedCity) {
+                            dropdown.find('option').each(function() {
+                                if ($(this).text() === savedCity) {
+                                    dropdown.val($(this).val()).trigger('change');
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                // Load barangays when city is selected
+                my_handlers.fill_barangays = function() {
+                    var city_code = $(this).val();
+                    var city_text = $(this).find("option:selected").text();
+                    $('#city-text').val(city_text);
+                    
+                    let dropdown = $('#barangay');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" disabled>Choose Barangay</option>');
+                    dropdown.prop('selectedIndex', 0);
+
+                    $.getJSON('ph-json/barangay.json', function(data) {
+                        var barangays = data.filter(barangay => barangay.city_code === city_code);
+                        barangays.sort((a, b) => a.brgy_name.localeCompare(b.brgy_name));
+
+                        $.each(barangays, function(key, entry) {
+                            dropdown.append($('<option></option>')
+                                .attr('value', entry.brgy_code)
+                                .text(entry.brgy_name));
+                        });
+
+                        // Set selected barangay if exists
+                        var savedBarangay = $('#barangay-text').val();
+                        if (savedBarangay) {
+                            dropdown.find('option').each(function() {
+                                if ($(this).text() === savedBarangay) {
+                                    dropdown.val($(this).val()).trigger('change');
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                // Update barangay text when selected
+                my_handlers.onchange_barangay = function() {
+                    var barangay_text = $(this).find("option:selected").text();
+                    $('#barangay-text').val(barangay_text);
+                };
+            });
+
+            function saveAddress() {
+                const form = document.getElementById('address-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                // Update text inputs with selected text values
+                $('#region-text').val($('#region option:selected').text());
+                $('#province-text').val($('#province option:selected').text());
+                $('#city-text').val($('#city option:selected').text());
+                $('#barangay-text').val($('#barangay option:selected').text());
+
+                const formData = new FormData(form);
+                
+                // Convert FormData to URLSearchParams for PUT request
+                const searchParams = new URLSearchParams();
+                for (const pair of formData) {
+                    searchParams.append(pair[0], pair[1]);
+                }
+                
+                fetch(form.action, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: searchParams
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: data.message,
+                            iconColor: '#ec4899',
+                            background: '#171717',
+                            color: '#fff',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#ec4899'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        throw new Error(data.message || 'Failed to update address');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error details:', error);
+                    let errorMessage = 'Failed to update address.';
+                    if (error.errors) {
+                        errorMessage = Object.values(error.errors).flat().join('\n');
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                        iconColor: '#ec4899',
+                        background: '#171717',
+                        color: '#fff',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#ec4899'
+                    });
+                });
+            }
+
             function confirmDelete() {
                 Swal.fire({
                     title: 'Delete Account',
@@ -220,116 +562,6 @@
                 });
             }
 
-            function saveAddress() {
-                const form = document.getElementById('address-form');
-                if (!form.checkValidity()) {
-                    form.reportValidity();
-                    return;
-                }
-
-                const formData = new FormData(form);
-
-                // Show loading state
-                Swal.fire({
-                    title: 'Saving...',
-                    text: 'Updating your address information',
-                    background: '#171717',
-                    color:'#fff',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    willOpen: () => {
-                        Swal.showLoading();
-                    },
-                    didOpen: () => {
-                        const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
-                        if (loader) {
-                            loader.style.borderLeftColor = '#ec4899';
-                        }
-                    }
-                });
-
-                // Convert FormData to JSON
-                const jsonData = {};
-                formData.forEach((value, key) => {
-                    jsonData[key] = value;
-                });
-                
-                fetch(form.action, {
-                    method: 'PUT',
-                    body: JSON.stringify(jsonData),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    credentials: 'same-origin'
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    return response.text().then(text => {
-                        try {
-                            return text ? JSON.parse(text) : {}
-                        } catch (e) {
-                            console.error('Error parsing response:', text);
-                            throw new Error('Invalid JSON response');
-                        }
-                    }).then(data => {
-                        if (!response.ok) {
-                            return Promise.reject(data);
-                        }
-                        return data;
-                    });
-                })
-                .then(data => {
-                    console.log('Success:', data);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: data.message || 'Your address has been updated successfully',
-                        iconColor: '#22c55e',
-                        background: '#171717',
-                        color:'#fff',
-                        showConfirmButton: true,
-                        confirmButtonText: 'OK',
-                        buttonsStyling: true,
-                        confirmButtonColor: '#Ff91a4',
-                        customClass: {
-                            popup: 'rounded-[20px] border border-neutral-800',
-                            confirmButton: 'rounded-xl font-bold',
-                            icon: 'border-green-500 text-green-500'
-                        }
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                })
-                .catch(error => {
-                    console.error('Error details:', error);
-                    let errorMessage = 'Failed to update address.';
-                    if (error.errors) {
-                        errorMessage = Object.values(error.errors).flat().join('\n');
-                    } else if (error.message) {
-                        errorMessage = error.message;
-                    }
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorMessage,
-                        iconColor: '#ec4899',
-                        background: '#171717',
-                        color: '#fff',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#Ff91a4',
-                        customClass: {
-                            popup: 'rounded-[20px] border border-neutral-800',
-                            confirmButton: 'rounded-xl font-bold'
-                        }
-                    });
-                });
-
-                return false;
-            }
-
             function confirmOrderCancel(cancelUrl) {
                 Swal.fire({
                     title: 'Cancel Order',
@@ -355,7 +587,7 @@
                             title: 'Cancelling Order...',
                             text: 'Please wait while we process your request',
                             background: '#171717',
-                            color: '#fff',
+                            color:'#fff',
                             allowOutsideClick: false,
                             showConfirmButton: false,
                             willOpen: () => {
@@ -378,6 +610,92 @@
             function toggleSubmitButton(select) {
                 const submitButton = select.parentElement.querySelector('#submitRating');
                 submitButton.style.display = select.value ? 'block' : 'none';
+
+                // Add click event listener to the submit button
+                if (submitButton) {
+                    submitButton.onclick = function(e) {
+                        e.preventDefault();
+                        const ratingValue = select.value;
+                        const form = select.closest('form');
+                        
+                        // Show loading state
+                        Swal.fire({
+                            title: 'Submitting Rating...',
+                            text: 'Please wait while we process your rating',
+                            background: '#171717',
+                            color: '#fff',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            },
+                            didOpen: () => {
+                                const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
+                                if (loader) {
+                                    loader.style.borderLeftColor = '#ec4899';
+                                }
+                            }
+                        });
+
+                        // Submit the form
+                        fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Accept': 'application/json'
+                            },
+                            body: new URLSearchParams(new FormData(form))
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            const contentType = response.headers.get('content-type');
+                            if (contentType && contentType.includes('application/json')) {
+                                return response.json();
+                            }
+                            // If response is not JSON, show success anyway
+                            return { success: true };
+                        })
+                        .then(data => {
+                            // Show thank you message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thank You for Your Rating!',
+                                text: 'Your feedback helps us improve our products and services.',
+                                iconColor: '#22c55e',
+                                background: '#171717',
+                                color: '#fff',
+                                confirmButtonText: 'Continue Shopping',
+                                confirmButtonColor: '#ec4899',
+                                customClass: {
+                                    popup: 'rounded-[20px] border border-neutral-800',
+                                    confirmButton: 'rounded-xl'
+                                }
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong while submitting your rating. Please try again.',
+                                iconColor: '#ec4899',
+                                background: '#171717',
+                                color: '#fff',
+                                confirmButtonText: 'Try Again',
+                                confirmButtonColor: '#ec4899',
+                                customClass: {
+                                    popup: 'rounded-[20px] border border-neutral-800',
+                                    confirmButton: 'rounded-xl'
+                                }
+                            });
+                        });
+                    };
+                }
             }
         </script>
     @endpush
