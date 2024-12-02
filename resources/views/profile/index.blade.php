@@ -502,7 +502,7 @@
                         background: '#171717',
                         color: '#fff',
                         confirmButtonText: 'OK',
-                        confirmButtonColor: '#ec4899'
+                        confirmButtonColor: '#Ff91a4'
                     });
                 });
             }

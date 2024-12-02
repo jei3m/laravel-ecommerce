@@ -27,10 +27,6 @@ class User extends Authenticatable
         'city',
         'province',
         'region',
-        'region_code',
-        'province_code',
-        'city_code',
-        'barangay_code',
         'is_admin',
     ];
 

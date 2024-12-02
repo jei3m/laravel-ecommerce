@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
                 'image' => 'https://placehold.co/400'
             ],
             [
-                'name' => 'Wireless Headphones',
+                'name' => 'Headphones',
                 'price' => 199.99,
                 'description' => 'Premium wireless headphones with noise cancellation',
                 'category' => 'Electronics',
@@ -75,7 +75,7 @@ class ProductSeeder extends Seeder
                 'image' => 'https://placehold.co/400'
             ],
             [
-                'name' => '4K Ultra HD TV',
+                'name' => '4K TV',
                 'price' => 499.99,
                 'description' => '55-inch 4K Ultra HD Smart TV with HDR',
                 'category' => 'Electronics',
@@ -91,7 +91,7 @@ class ProductSeeder extends Seeder
                 'image' => 'https://placehold.co/400'
             ],
             [
-                'name' => 'Wireless Keyboard',
+                'name' => 'Keyboard',
                 'price' => 49.99,
                 'description' => 'Compact wireless keyboard with ergonomic design',
                 'category' => 'Electronics',
