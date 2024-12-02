@@ -104,6 +104,10 @@ class PaymentController extends Controller
     // Handle cancelled PayPal payment and update order status
     public function cancel(Order $order)
     {
+        foreach ($order->items as $item) {
+            $item->product->increment('stock', $item->quantity);
+        }
+        
         $order->update([
             'payment_status' => 'cancelled',
             'order_status' => 'cancelled'
@@ -111,5 +115,48 @@ class PaymentController extends Controller
 
         return redirect()->route('cart.index')
             ->with('error', 'PayPal payment cancelled');
+    }
+
+    // Add payment status check endpoint
+    public function checkStatus(Request $request)
+    {
+        $orderId = session('pending_payment_order_id');
+        
+        if (!$orderId) {
+            return response()->json([
+                'status' => 'pending'
+            ]);
+        }
+        
+        $order = Order::find($orderId);
+        
+        if (!$order) {
+            return response()->json([
+                'status' => 'pending'
+            ]);
+        }
+        
+        if ($order->payment_status === 'completed') {
+            // Clear the session
+            session()->forget('pending_payment_order_id');
+            
+            return response()->json([
+                'status' => 'completed',
+                'redirect_url' => route('orders.success', $order->id)
+            ]);
+        }
+        
+        if ($order->payment_status === 'cancelled') {
+            // Clear the session
+            session()->forget('pending_payment_order_id');
+            
+            return response()->json([
+                'status' => 'cancelled'
+            ]);
+        }
+        
+        return response()->json([
+            'status' => 'pending'
+        ]);
     }
 }

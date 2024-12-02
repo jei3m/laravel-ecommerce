@@ -59,8 +59,7 @@ class OrderController extends Controller
                 'price' => $item->product->price
             ]);
 
-            // Update product sold count and stock
-            $item->product->increment('sold', $item->quantity);
+            // Only decrement stock to reserve the items
             $item->product->decrement('stock', $item->quantity);
         }
 
@@ -103,9 +102,18 @@ class OrderController extends Controller
 
             if ($validated['order_status'] === 'completed' && $oldStatus !== 'completed') {
                 foreach ($order->items as $item) {
+                    // Only increase sold quantity as dashboard updates are for COD
                     $item->product->increment('sold', $item->quantity);
                 }
-            }
+            } elseif ($validated['order_status'] === 'cancelled') {
+                foreach ($order->items as $item) {
+                    $item->product->increment('stock', $item->quantity);
+                    // Only decrement sold if the order was previously completed
+                    if ($oldStatus === 'completed') {
+                        $item->product->decrement('sold', $item->quantity);
+                    }
+                }
+            }   
 
             // Changes to order_status applies to payment_status
             $statusMap = [
@@ -153,6 +161,11 @@ class OrderController extends Controller
     {
         try {
             if ($order->order_status !== 'completed') {
+                // Restore stock for each product in the order
+                foreach ($order->items as $item) {
+                    $item->product->increment('stock', $item->quantity);
+                }
+
                 $order->update([
                     'order_status' => 'cancelled',
                     'payment_status' => 'cancelled'
@@ -201,5 +214,18 @@ class OrderController extends Controller
             ->paginate(10);
 
         return view('orders.dashboard', compact('orders'));
+    }
+
+    // Check order status
+    public function checkStatus(Order $order)
+    {
+        // Ensure user can only check their own orders
+        if ($order->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json([
+            'status' => $order->payment_status
+        ]);
     }
 }

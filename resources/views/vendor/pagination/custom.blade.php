@@ -41,12 +41,12 @@
                     @if ($paginator->onFirstPage())
                         <span aria-disabled="true" aria-label="{{ __('pagination.previous') }}">
                             <span class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-neutral-800 border border-neutral-700 cursor-default rounded-l-xl" aria-hidden="true">
-                                <i class="fas fa-chevron-left w-5 h-5"></i>
+                                <i class="fas fa-chevron-left w-5 h-5 flex items-center justify-center"></i>
                             </span>
                         </span>
                     @else
-                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-400 bg-neutral-800 border border-neutral-700 rounded-l-xl hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-spink" aria-label="{{ __('pagination.previous') }}">
-                            <i class="fas fa-chevron-left w-5 h-5"></i>
+                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-400 bg-neutral-800 border border-neutral-700 rounded-l-xl hover:bg-neutral-700 focus:outline-none" aria-label="{{ __('pagination.previous') }}">
+                            <i class="fas fa-chevron-left w-5 h-5 flex items-center justify-center"></i>
                         </a>
                     @endif
 
@@ -77,13 +77,13 @@
 
                     {{-- Next Page Link --}}
                     @if ($paginator->hasMorePages())
-                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-400 bg-neutral-800 border border-neutral-700 rounded-r-xl hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-spink" aria-label="{{ __('pagination.next') }}">
-                            <i class="fas fa-chevron-right w-5 h-5"></i>
+                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-400 bg-neutral-800 border border-neutral-700 rounded-r-xl hover:bg-neutral-700 focus:outline-none" aria-label="{{ __('pagination.next') }}">
+                            <i class="fas fa-chevron-right w-5 h-5 flex items-center justify-center"></i>
                         </a>
                     @else
                         <span aria-disabled="true" aria-label="{{ __('pagination.next') }}">
                             <span class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-500 bg-neutral-800 border border-neutral-700 cursor-default rounded-r-xl" aria-hidden="true">
-                                <i class="fas fa-chevron-right w-5 h-5"></i>
+                                <i class="fas fa-chevron-right w-5 h-5 flex items-center justify-center"></i>
                             </span>
                         </span>
                     @endif

@@ -60,7 +60,7 @@
 
                 <!-- Pagination -->
                 <div class="mt-6">
-                    {{ $products->links() }}
+                    {{ $products->links('pagination::custom') }}
                 </div>
             </div>
         </div>
