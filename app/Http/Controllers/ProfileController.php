@@ -89,21 +89,45 @@ class ProfileController extends Controller
     public function updateAddress(Request $request)
     {
         try {
-            Log::info('Address update request:', $request->all());
+            Log::info('Address update request received', [
+                'all_data' => $request->all(),
+                'headers' => $request->headers->all()
+            ]);
             
             $validated = $request->validate([
                 'street_address' => 'nullable|string|max:255',
                 'barangay' => 'nullable|string|max:255',
                 'city' => 'nullable|string|max:255',
                 'province' => 'nullable|string|max:255',
+                'region' => 'nullable|string|max:255',
+                'region_code' => 'nullable|string|max:50',
+                'province_code' => 'nullable|string|max:50',
+                'city_code' => 'nullable|string|max:50',
+                'barangay_code' => 'nullable|string|max:50'
             ]);
 
             Log::info('Validated data:', $validated);
 
             $user = Auth::user();
-            $updated = $user->update($validated);
-
-            Log::info('Update result:', ['success' => $updated]);
+            Log::info('Current user data:', $user->toArray());
+            
+            // Remove null and empty string values from validated data
+            $validated = array_filter($validated, function($value) {
+                return !is_null($value) && $value !== '';
+            });
+            
+            Log::info('Filtered data for update:', $validated);
+            
+            try {
+                $updated = $user->update($validated);
+                Log::info('Update operation result:', ['success' => $updated]);
+            } catch (\Exception $e) {
+                Log::error('Database update error:', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                throw $e;
+            }
 
             if (!$updated) {
                 throw new \Exception('Failed to update user address');
@@ -117,14 +141,20 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             Log::error('Address update error:', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
             ]);
+
+            $statusCode = $e instanceof \Illuminate\Validation\ValidationException ? 422 : 500;
+            $errors = $e instanceof \Illuminate\Validation\ValidationException 
+                ? $e->errors() 
+                : ['error' => $e->getMessage()];
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update address',
-                'errors' => $e instanceof \Illuminate\Validation\ValidationException ? $e->errors() : ['error' => $e->getMessage()]
-            ], $e instanceof \Illuminate\Validation\ValidationException ? 422 : 500);
+                'message' => 'Failed to update address: ' . $e->getMessage(),
+                'errors' => $errors
+            ], $statusCode);
         }
     }
 }
