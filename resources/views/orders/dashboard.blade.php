@@ -87,7 +87,7 @@
 
                     <!-- Pagination -->
                     <div class="mt-6">
-                        {{ $orders->links('pagination::custom') }}
+                        {{ $orders->links('components.custom-pagination') }}
                     </div>
                 </div>
             </div>

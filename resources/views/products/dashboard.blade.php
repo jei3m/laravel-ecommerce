@@ -90,7 +90,7 @@
 
                     <!-- Pagination -->
                     <div class="mt-6">
-                        {{ $products->links('pagination::custom') }}
+                        {{ $products->links('components.custom-pagination') }}
                     </div>
                 </div>
             </div>

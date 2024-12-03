@@ -16,7 +16,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin Routes
     Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
-        Route::get('/dashboard', [ProductController::class, 'dashboard'])->name('dashboard');
         Route::get('/products/dashboard', [ProductController::class, 'dashboard'])->name('products.dashboard');
         Route::get('/orders/dashboard', [OrderController::class, 'dashboard'])->name('orders.dashboard');
         Route::get('/products/dashboard/search', [ProductController::class, 'dashboardSearch'])->name('products.dashboard.search');
@@ -26,9 +25,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('orders.update-payment-status');
     });
 
-
     // Product Routes
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/browse', [ProductController::class, 'browse'])->name('products.browse');
     Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
     Route::resource('products', ProductController::class);
