@@ -49,13 +49,15 @@
 
                 <!-- Products Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    @forelse($products as $product)
-                        <x-product-card :product="$product" />
-                    @empty
+                    @if($products->count() > 0)
+                        @foreach($products as $product)
+                            <x-product-card :product="$product" />
+                        @endforeach
+                    @else
                         <div class="col-span-full text-center py-12">
                             <p class="text-gray-500 text-lg">No products found.</p>
                         </div>
-                    @endforelse
+                    @endif
                 </div>
 
                 <!-- Pagination -->

@@ -1,20 +1,20 @@
 <section>
     <header>
         <h2 class="text-xl font-semibold text-white mb-2">
-            {{ __('Update Password') }}
+            Update Password
         </h2>
 
         <p class="text-gray-300 text-sm mb-6">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
+            Ensure your account is using a long, random password to stay secure.
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('put')
 
         <div>
-            <x-input-label for="current_password" :value="__('Current Password')" class="text-white" />
+            <x-input-label for="current_password" value="Current Password" class="text-white" />
             <x-text-input 
                 id="current_password" 
                 name="current_password" 
@@ -26,7 +26,7 @@
         </div>
 
         <div>
-            <x-input-label for="password" :value="__('New Password')" class="text-white" />
+            <x-input-label for="password" value="New Password" class="text-white" />
             <x-text-input 
                 id="password" 
                 name="password" 
@@ -38,7 +38,7 @@
         </div>
 
         <div>
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="text-white" />
+            <x-input-label for="password_confirmation" value="Confirm Password" class="text-white" />
             <x-text-input 
                 id="password_confirmation" 
                 name="password_confirmation" 
@@ -49,9 +49,9 @@
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex justify-end gap-4">
+        <div class="flex items-center gap-4">
             <button type="submit" class="px-4 py-2 bg-spink text-white font-semibold rounded-xl hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition-colors">
-                {{ __('Save Password') }}
+                Save
             </button>
 
             @if (session('status') === 'password-updated')
@@ -60,8 +60,10 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-white"
-                >{{ __('Saved.') }}</p>
+                    class="text-sm text-gray-300"
+                >
+                    Saved.
+                </p>
             @endif
         </div>
     </form>

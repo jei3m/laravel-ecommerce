@@ -54,11 +54,11 @@
                     </a>
 
                     <!-- Forgot Password -->
-                    @if (Route::has('password.request'))
+                    {{-- @if (Route::has('password.request'))
                         <a class="text-sm text-gray-400 text-center" href="{{ route('password.request') }}">
                             Forgot your password?
                         </a>
-                    @endif
+                    @endif --}}
                 </div>
             </form>
         </div>
