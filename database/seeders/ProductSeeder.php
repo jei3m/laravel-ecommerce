@@ -51,7 +51,7 @@ class ProductSeeder extends Seeder
                 'image' => 'https://placehold.co/400'
             ],
             [
-                'name' => 'Bluetooth Speaker',
+                'name' => 'Speaker',
                 'price' => 89.99,
                 'description' => 'Portable Bluetooth speaker with 360-degree sound',
                 'category' => 'Electronics',
@@ -115,7 +115,7 @@ class ProductSeeder extends Seeder
                 'image' => 'https://placehold.co/400'
             ],
             [
-                'name' => 'Portable Charger',
+                'name' => 'Charger',
                 'price' => 29.99,
                 'description' => 'High-capacity portable charger for smartphones and tablets',
                 'category' => 'Electronics',

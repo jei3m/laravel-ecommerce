@@ -19,7 +19,7 @@
                     </div>
 
                     <div class="space-y-2 flex flex-col">
-                        @if(auth()->user()->isAdmin())
+                        @if(auth()->user()->hasRole('admin'))
                         <a href="{{ route('products.dashboard') }}" class="bg-spink text-white font-bold py-2 px-4 rounded-xl">
                             Products
                         </a>
