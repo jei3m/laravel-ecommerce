@@ -36,6 +36,7 @@
 
             <div class="bg-neutral-800 rounded-[30px] p-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
                     <!-- Product Image Section -->
                     <div class="relative rounded-[24px] overflow-hidden aspect-square">
                         @if(str_starts_with($product->image, 'http'))
@@ -236,6 +237,10 @@
                     popup: 'rounded-[15px] border border-neutral-700',
                     title: 'text-spink font-bold',
                     timerProgressBar: 'bg-spink',
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
                 }
             });
         })

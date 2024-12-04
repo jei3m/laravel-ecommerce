@@ -16,7 +16,6 @@
                     <div class="flex items-center text-yellow-400">
                         <span class="text-white mr-1">{{ number_format($product->average_rating, 1) }}</span>
                         <i class="fas fa-star mb-1"></i>
-                        {{-- <span>({{ $product->ratings->count() }})</span> --}}
                     </div>
                 </div>
                 <p class="text-md text-gray-300 mb-2">{{ $product->category }}</p>
