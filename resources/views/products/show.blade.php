@@ -6,7 +6,7 @@
     <div class="flex-1 flex items-center justify-center mt-0 md:mt-[-6rem]">
         <div class="container max-w-6xl mx-auto">
             <div class="flex justify-end mb-4">
-                <a href="{{ url()->previous() }}" class="bg-red-500 text-white p-3 px-5 rounded-full transition-all">
+                <a href="/products/browse" class="bg-red-500 text-white p-3 px-5 rounded-full transition-all">
                     <i class="fas fa-times text-xl"></i>
                 </a>
             </div>
@@ -143,7 +143,7 @@
 </script>
 @endif
 
-<script>
+{{-- <script>
     function confirmDelete() {
         Swal.fire({
             title: 'Delete Product',
@@ -171,7 +171,7 @@
             }
         });
     }
-</script>
+</script> --}}
 
 <script>
     // Prevent form submission on Enter key
@@ -228,9 +228,9 @@
                 title: 'Added to Cart!',
                 text: `${formData.get('quantity')}x {{ $product->name }} has been added to your cart`,
                 position: 'center',
-                showConfirmButton: true,
-                timerProgressBar: true,
-                confirmButtonColor: '#Ff91a4',
+                showConfirmButton: false,
+                timerProgressBar: false,
+                timer: 1000,
                 background: '#171717',
                 color: '#fff',
                 customClass: {
@@ -239,9 +239,7 @@
                     timerProgressBar: 'bg-spink',
                 }
             }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.reload();
-                }
+                window.location.reload();
             });
         })
         .catch(error => {
