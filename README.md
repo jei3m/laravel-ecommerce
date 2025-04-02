@@ -1,5 +1,7 @@
 # Laravel Ecommerce
 
+![laravelshop](https://github.com/user-attachments/assets/a6178a99-ca80-47d3-8f07-a171b5eaba01)
+
 A full-featured e-commerce application built with Laravel and Tailwind CSS, developed as part of my OJT program to learn full-stack development.
 
 ## Technologies Used
