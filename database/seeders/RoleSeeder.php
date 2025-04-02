@@ -10,9 +10,9 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create roles
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'customer']);
+        // Create roles if they don't exist
+        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
 
         // For testing purposes, create an admin user if none exists
         if (!User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->exists()) {
