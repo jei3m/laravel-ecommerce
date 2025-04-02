@@ -22,8 +22,7 @@ class ProfileController extends Controller
         $recentOrders = Order::where('user_id', $user->id)
             ->with(['items.product'])
             ->latest()
-            ->take(5)
-            ->get();
+            ->paginate(5);
 
         $orderItemCount = Order::where('user_id', $user->id)
             -> where('order_status', 'completed')
